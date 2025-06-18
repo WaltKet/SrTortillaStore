@@ -161,13 +161,13 @@
   <script>
     document.addEventListener('snipcart.ready', () => {
       Snipcart.api.fields.registerCustomField({
-        location: 'billing',
+        location: 'shipping',
         name: 'ShippingSameAsBilling',
         label: 'Shipping address is the same as billing address',
         type: 'checkbox',
         required: false,
         onChange: (field, value) => {
-          Snipcart.api.session.setBillingAddressCustomField("ShippingSameAsBilling", value);
+          Snipcart.api.session.setShippingAddressCustomField("ShippingSameAsBilling", value);
           if (value) {
             Snipcart.api.steps.shipping.hide();
           } else {
