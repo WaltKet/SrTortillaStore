@@ -116,10 +116,72 @@
         Add to Cart
       </button>
     </div>
-    <!-- Add more painting items here -->
   </section>
 
-  <div hidden id="snipcart" data-api-key="MzYxZGNmYWItNzQxMi00NmYyLWJmMTEtOGFmOGI4M2E2YWY0NjM4ODU4Mjk4OTA5OTQ5ODMy"></div>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": "Urban Blaze",
+    "image": "https://via.placeholder.com/300x200",
+    "description": "Spraypaint on canvas, 24x36 inches",
+    "sku": "urban-blaze",
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "USD",
+      "price": "200.00",
+      "availability": "https://schema.org/InStock"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": "Neon Jungle",
+    "image": "https://via.placeholder.com/300x200",
+    "description": "Spraypaint on canvas, 18x24 inches",
+    "sku": "neon-jungle",
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "USD",
+      "price": "150.00",
+      "availability": "https://schema.org/InStock"
+    }
+  }
+  </script>
+
+  <div hidden id="snipcart" data-api-key="MzYxZGNmYWItNzQxMi00NmYyLWJmMTEtOGFmOGI4M2E2YWY0NjM4ODU4Mjk4OTA5OTQ5ODMy"
+    data-config-add-billing-address-checkbox="true"
+    data-config-show-country-selector="true"
+    data-config-shipping-rates="true"
+    data-config-shipping-individual-address="true">
+  </div>
+
+  <script>
+    document.addEventListener('snipcart.ready', () => {
+      Snipcart.api.cart.setCustomField({
+        name: "Shipping matches billing?",
+        type: "checkbox",
+        options: "Yes",
+        required: true
+      });
+
+      Snipcart.api.shipping.setShippingMethods([{
+        id: 'us-shipping',
+        name: 'Standard Shipping (US)',
+        price: 0.00,
+        countries: ['US']
+      }, {
+        id: 'intl-shipping',
+        name: 'International Shipping',
+        price: 15.00,
+        countries: ['*'],
+        notCountries: ['US']
+      }]);
+    });
+  </script>
 
 </body>
 </html>
