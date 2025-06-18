@@ -20,6 +20,23 @@
       font-size: 2rem;
       letter-spacing: 2px;
       border-bottom: 2px solid #444;
+      position: relative;
+    }
+    .cart-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #ff3c38;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .cart-button:hover {
+      background: #e52b27;
     }
     .gallery {
       display: grid;
@@ -63,7 +80,10 @@
 </head>
 <body>
 
-  <header>SrTortilla</header>
+  <header>
+    SrTortilla
+    <button class="snipcart-checkout cart-button">View Cart</button>
+  </header>
 
   <section class="gallery">
     <div class="item">
