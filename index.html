@@ -51,7 +51,7 @@
       font-weight: bold;
       margin: 10px 0;
     }
-    .simpleCart_add {
+    .item_add {
       background: #ff3c38;
       color: white;
       padding: 8px 15px;
@@ -61,7 +61,7 @@
       cursor: pointer;
       font-weight: bold;
     }
-    .simpleCart_add:hover {
+    .item_add:hover {
       background: #e52b27;
     }
     .cart {
@@ -126,33 +126,19 @@
   <section class="gallery">
     <div class="item simpleCart_shelfItem">
       <img src="https://via.placeholder.com/300x200" alt="Painting 1">
-      <h3>Urban Blaze</h3>
-      <p>Spraypaint on canvas, 24x36 inches</p>
-      <div class="price">$200.00</div>
-      <button 
-        class="simpleCart_add"
-        data-name="Urban Blaze"
-        data-price="200.00"
-        data-id="urban-blaze"
-        data-url="/"
-        data-quantity="1">
-        Add to Cart
-      </button>
+      <h3 class="item_name">Urban Blaze</h3>
+      <p class="item_description">Spraypaint on canvas, 24x36 inches</p>
+      <div class="price item_price">200.00</div>
+      <input type="hidden" class="item_quantity" value="1">
+      <button class="item_add">Add to Cart</button>
     </div>
     <div class="item simpleCart_shelfItem">
       <img src="https://via.placeholder.com/300x200" alt="Painting 2">
-      <h3>Neon Jungle</h3>
-      <p>Spraypaint on canvas, 18x24 inches</p>
-      <div class="price">$150.00</div>
-      <button 
-        class="simpleCart_add"
-        data-name="Neon Jungle"
-        data-price="150.00"
-        data-id="neon-jungle"
-        data-url="/"
-        data-quantity="1">
-        Add to Cart
-      </button>
+      <h3 class="item_name">Neon Jungle</h3>
+      <p class="item_description">Spraypaint on canvas, 18x24 inches</p>
+      <div class="price item_price">150.00</div>
+      <input type="hidden" class="item_quantity" value="1">
+      <button class="item_add">Add to Cart</button>
     </div>
     <!-- Add more painting items here -->
   </section>
