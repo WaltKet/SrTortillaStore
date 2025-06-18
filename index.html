@@ -39,17 +39,9 @@
       width: 100%;
       border-radius: 8px;
     }
-    .item h3 {
-      margin: 10px 0 5px;
-      font-size: 1.2rem;
-    }
-    .item p {
-      font-size: 0.9rem;
-      color: #ccc;
-    }
-    .price {
-      font-weight: bold;
-      margin: 10px 0;
+    .item span {
+      display: block;
+      margin: 5px 0;
     }
     .item_add {
       background: #ff3c38;
@@ -60,6 +52,8 @@
       margin: 5px;
       cursor: pointer;
       font-weight: bold;
+      text-decoration: none;
+      text-align: center;
     }
     .item_add:hover {
       background: #e52b27;
@@ -101,22 +95,6 @@
       background-color: #2c2c2c;
       color: #fff;
     }
-    .admin-view {
-      padding: 30px;
-      background-color: #1a1a1a;
-      border-top: 2px solid #444;
-      margin-top: 50px;
-    }
-    .admin-view h2 {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-    }
-    .admin-view pre {
-      background-color: #222;
-      padding: 15px;
-      border-radius: 8px;
-      color: #0f0;
-    }
   </style>
 </head>
 <body>
@@ -126,19 +104,17 @@
   <section class="gallery">
     <div class="item simpleCart_shelfItem">
       <img src="https://via.placeholder.com/300x200" alt="Painting 1">
-      <h3 class="item_name">Urban Blaze</h3>
-      <p class="item_description">Spraypaint on canvas, 24x36 inches</p>
-      <div class="price item_price">200.00</div>
-      <input type="hidden" class="item_quantity" value="1">
-      <button class="item_add">Add to Cart</button>
+      <span class="item_name">Urban Blaze</span>
+      <span class="item_description">Spraypaint on canvas, 24x36 inches</span>
+      <span class="item_price">200.00</span>
+      <a href="javascript:;" class="item_add">Add to Cart</a>
     </div>
     <div class="item simpleCart_shelfItem">
       <img src="https://via.placeholder.com/300x200" alt="Painting 2">
-      <h3 class="item_name">Neon Jungle</h3>
-      <p class="item_description">Spraypaint on canvas, 18x24 inches</p>
-      <div class="price item_price">150.00</div>
-      <input type="hidden" class="item_quantity" value="1">
-      <button class="item_add">Add to Cart</button>
+      <span class="item_name">Neon Jungle</span>
+      <span class="item_description">Spraypaint on canvas, 18x24 inches</span>
+      <span class="item_price">150.00</span>
+      <a href="javascript:;" class="item_add">Add to Cart</a>
     </div>
     <!-- Add more painting items here -->
   </section>
@@ -157,11 +133,6 @@
 
     <a href="javascript:;" class="simpleCart_checkout checkout-btn" onclick="saveShippingInfo()">Checkout</a>
   </div>
-
-  <section class="admin-view">
-    <h2>Admin View: Saved Shipping Info</h2>
-    <pre id="adminShippingInfo">Loading...</pre>
-  </section>
 
   <script>
     simpleCart({
@@ -190,11 +161,9 @@
       const savedAddress = localStorage.getItem("shippingAddress");
       if (savedName) document.getElementById("shippingName").value = savedName;
       if (savedAddress) document.getElementById("shippingAddress").value = savedAddress;
-
-      document.getElementById("adminShippingInfo").innerText =
-        `Name: ${savedName || 'N/A'}\nAddress: ${savedAddress || 'N/A'}`;
     };
   </script>
 
 </body>
 </html>
+
