@@ -155,17 +155,25 @@
   <div hidden id="snipcart" data-api-key="MzYxZGNmYWItNzQxMi00NmYyLWJmMTEtOGFmOGI4M2E2YWY0NjM4ODU4Mjk4OTA5OTQ5ODMy"
     data-config-add-billing-address-checkbox="true"
     data-config-show-country-selector="true"
-    data-config-shipping-rates="true"
     data-config-shipping-individual-address="true">
   </div>
 
   <script>
     document.addEventListener('snipcart.ready', () => {
-      Snipcart.api.cart.setCustomField({
-        name: "Shipping matches billing?",
-        type: "checkbox",
-        options: "Yes",
-        required: true
+      Snipcart.api.fields.registerCustomField({
+        location: 'billing',
+        name: 'ShippingSameAsBilling',
+        label: 'Shipping address is the same as billing address',
+        type: 'checkbox',
+        required: false,
+        onChange: (field, value) => {
+          Snipcart.api.session.setBillingAddressCustomField("ShippingSameAsBilling", value);
+          if (value) {
+            Snipcart.api.steps.shipping.hide();
+          } else {
+            Snipcart.api.steps.shipping.show();
+          }
+        }
       });
 
       Snipcart.api.shipping.setShippingMethods([{
