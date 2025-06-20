@@ -51,7 +51,7 @@
     }
     .gallery {
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(6, 1fr); /* 6 columns */
       gap: 20px;
       padding: 30px;
     }
@@ -128,23 +128,26 @@
   </button>
 </header>
 
+<!-- Category Filter -->
 <div id="categories-bar" style="text-align:center; padding: 15px;">
   <span id="category-buttons">
-    <!-- Static Category Buttons -->
-    <button class="category-button">Art</button>
-    <button class="category-button">Sculptures</button>
-    <button class="category-button">Paintings</button>
+    <!-- Category Buttons (static example) -->
+    <button class="category-button" onclick="filterProducts('Art')">Art</button>
+    <button class="category-button" onclick="filterProducts('Sculptures')">Sculptures</button>
+    <button class="category-button" onclick="filterProducts('Paintings')">Paintings</button>
   </span>
 </div>
 
+<!-- Search Bar -->
 <div id="search-bar">
-  <input type="text" id="search-input" placeholder="Search for artwork by name...">
+  <input type="text" id="search-input" placeholder="Search for artwork by name..." oninput="filterProducts()">
 </div>
 
+<!-- Gallery -->
 <section class="gallery" id="gallery">
-  <!-- Static Products -->
-  <div class="item">
-    <img src="https://waltket.github.io/SrTortillaStore/SHrekMusical.jpg" alt="Product 1">
+  <!-- Static Product Items -->
+  <div class="item" data-category="Art">
+    <img src="product1.jpg" alt="Product 1">
     <span class="item_name">Product 1</span>
     <span class="item_description">Beautiful abstract art</span>
     <span class="item_price">$19.99</span>
@@ -158,8 +161,8 @@
     </button>
   </div>
 
-  <div class="item">
-    <img src="https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png" alt="Product 2">
+  <div class="item" data-category="Sculptures">
+    <img src="product2.jpg" alt="Product 2">
     <span class="item_name">Product 2</span>
     <span class="item_description">Modern art piece</span>
     <span class="item_price">$29.99</span>
@@ -173,8 +176,8 @@
     </button>
   </div>
 
-  <div class="item">
-    <img src="https://waltket.github.io/SrTortillaStore/SHrekMusical.jpg" alt="Product 3">
+  <div class="item" data-category="Paintings">
+    <img src="product3.jpg" alt="Product 3">
     <span class="item_name">Product 3</span>
     <span class="item_description">Classic landscape painting</span>
     <span class="item_price">$39.99</span>
@@ -187,15 +190,167 @@
       Add to Cart
     </button>
   </div>
+  
+  <div class="item" data-category="Paintings">
+    <img src="product3.jpg" alt="Product 3">
+    <span class="item_name">Product 3</span>
+    <span class="item_description">Classic landscape painting</span>
+    <span class="item_price">$39.99</span>
+    <button class="snipcart-add-item"
+      data-item-id="4"
+      data-item-price="39.99"
+      data-item-url="/product3"
+      data-item-description="Classic landscape painting"
+      data-item-name="Product 3">
+      Add to Cart
+    </button>
+  </div>
+  
+    <div class="item" data-category="Paintings">
+    <img src="product3.jpg" alt="Product 3">
+    <span class="item_name">Product 3</span>
+    <span class="item_description">Classic landscape painting</span>
+    <span class="item_price">$39.99</span>
+    <button class="snipcart-add-item"
+      data-item-id="5"
+      data-item-price="39.99"
+      data-item-url="/product3"
+      data-item-description="Classic landscape painting"
+      data-item-name="Product 3">
+      Add to Cart
+    </button>
+  </div>
 
+  <div class="item" data-category="Paintings">
+    <img src="product3.jpg" alt="Product 3">
+    <span class="item_name">Product 3</span>
+    <span class="item_description">Classic landscape painting</span>
+    <span class="item_price">$39.99</span>
+    <button class="snipcart-add-item"
+      data-item-id="6"
+      data-item-price="39.99"
+      data-item-url="/product3"
+      data-item-description="Classic landscape painting"
+      data-item-name="Product 3">
+      Add to Cart
+    </button>
+  </div>
+
+  <div class="item" data-category="Paintings">
+    <img src="product3.jpg" alt="Product 3">
+    <span class="item_name">Product 3</span>
+    <span class="item_description">Classic landscape painting</span>
+    <span class="item_price">$39.99</span>
+    <button class="snipcart-add-item"
+      data-item-id="7"
+      data-item-price="39.99"
+      data-item-url="/product3"
+      data-item-description="Classic landscape painting"
+      data-item-name="Product 3">
+      Add to Cart
+    </button>
+  </div>
+
+  <div class="item" data-category="Paintings">
+    <img src="product3.jpg" alt="Product 3">
+    <span class="item_name">Product 3</span>
+    <span class="item_description">Classic landscape painting</span>
+    <span class="item_price">$39.99</span>
+    <button class="snipcart-add-item"
+      data-item-id="8"
+      data-item-price="39.99"
+      data-item-url="/product3"
+      data-item-description="Classic landscape painting"
+      data-item-name="Product 3">
+      Add to Cart
+    </button>
+  </div>
+
+  <div class="item" data-category="Paintings">
+    <img src="product3.jpg" alt="Product 3">
+    <span class="item_name">Product 3</span>
+    <span class="item_description">Classic landscape painting</span>
+    <span class="item_price">$39.99</span>
+    <button class="snipcart-add-item"
+      data-item-id="9"
+      data-item-price="39.99"
+      data-item-url="/product3"
+      data-item-description="Classic landscape painting"
+      data-item-name="Product 3">
+      Add to Cart
+    </button>
+  </div>
+
+  <div class="item" data-category="Paintings">
+    <img src="product3.jpg" alt="Product 3">
+    <span class="item_name">Product 3</span>
+    <span class="item_description">Classic landscape painting</span>
+    <span class="item_price">$39.99</span>
+    <button class="snipcart-add-item"
+      data-item-id="10"
+      data-item-price="39.99"
+      data-item-url="/product3"
+      data-item-description="Classic landscape painting"
+      data-item-name="Product 3">
+      Add to Cart
+    </button>
+  </div>
+
+  <div class="item" data-category="Paintings">
+    <img src="product3.jpg" alt="Product 3">
+    <span class="item_name">Product 3</span>
+    <span class="item_description">Classic landscape painting</span>
+    <span class="item_price">$39.99</span>
+    <button class="snipcart-add-item"
+      data-item-id="11"
+      data-item-price="39.99"
+      data-item-url="/product3"
+      data-item-description="Classic landscape painting"
+      data-item-name="Product 3">
+      Add to Cart
+    </button>
+  </div>
+  
+  <div class="item" data-category="Paintings">
+    <img src="product3.jpg" alt="Product 3">
+    <span class="item_name">Product 3</span>
+    <span class="item_description">Classic landscape painting</span>
+    <span class="item_price">$39.99</span>
+    <button class="snipcart-add-item"
+      data-item-id="12"
+      data-item-price="39.99"
+      data-item-url="/product3"
+      data-item-description="Classic landscape painting"
+      data-item-name="Product 3">
+      Add to Cart
+    </button>
+  </div>
+
+  <div class="item" data-category="Paintings">
+    <img src="product3.jpg" alt="Product 3">
+    <span class="item_name">Product 3</span>
+    <span class="item_description">Classic landscape painting</span>
+    <span class="item_price">$39.99</span>
+    <button class="snipcart-add-item"
+      data-item-id="13"
+      data-item-price="39.99"
+      data-item-url="/product3"
+      data-item-description="Classic landscape painting"
+      data-item-name="Product 3">
+      Add to Cart
+    </button>
+  </div>
+
+  <!-- More products as needed -->
 </section>
 
-<div class="pagination" id="pagination">
-  <!-- Static Pagination Buttons -->
+<!-- Pagination -->
+<div class="pagination">
   <button>1</button>
   <button>2</button>
 </div>
 
+<!-- Modal (Optional) -->
 <div id="modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background-color:rgba(0,0,0,0.9); z-index:1000; justify-content:center; align-items:center; flex-direction:column;">
   <span id="modal-close" style="position:absolute; top:20px; right:30px; font-size:30px; color:white; cursor:pointer;">&times;</span>
   <img id="modal-img" src="" alt="" style="max-width:90vw; max-height:60vh; border-radius:10px;">
@@ -212,5 +367,19 @@
   data-config-add-billing-address-checkbox="true"
   data-config-show-country-selector="true">
 </div>
+
+<script>
+  // Static Product Filtering by Category
+  function filterProducts(category = '') {
+    const items = document.querySelectorAll('.item');
+    items.forEach(item => {
+      if (category === '' || item.getAttribute('data-category') === category || item.querySelector('.item_name').innerText.toLowerCase().includes(document.getElementById('search-input').value.toLowerCase())) {
+        item.style.display = 'block'; // Show item
+      } else {
+        item.style.display = 'none'; // Hide item
+      }
+    });
+  }
+</script>
 </body>
 </html>
