@@ -31,14 +31,6 @@
     });
 
   document.addEventListener('snipcart.ready', () => {
-    const observer = new MutationObserver(() => {
-      const count = document.querySelector('.snipcart-items-count');
-      if (count) {
-        count.textContent = Snipcart.store.getState().cart.items.count;
-      }
-    });
-    observer.observe(document.querySelector(".snipcart-checkout"), { childList: true, subtree: true });
-
     Snipcart.store.subscribe(() => {
       const count = Snipcart.store.getState().cart.items.count;
       const counter = document.querySelector('.snipcart-items-count');
@@ -175,9 +167,7 @@
     View Cart <span class="snipcart-items-count"></span>
   </button>
 </header>
-
 <!-- remaining HTML and script code unchanged -->
-
 <div id="categories-bar" style="text-align:center; padding: 15px;">
   <span id="category-buttons"></span>
 </div>
