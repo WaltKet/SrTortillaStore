@@ -387,66 +387,72 @@
     { id: 13, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
     // Add more products as needed
   ];
- let currentPage = 1;
-  const itemsPerPage = 12;
-  let activeCategory = '';
+  
+let currentPage = 1;
+const itemsPerPage = 12;
+let activeCategory = '';  // No active category initially
 
-  function goToPage(page) {
-    currentPage = page;
-    renderPage();
-  }
-
-  function renderPage() {
-    const gallery = document.getElementById('gallery');
-    gallery.innerHTML = '';
-    const start = (currentPage - 1) * itemsPerPage;
-
-    let filteredProducts = allProducts;
-
-    // Filter by active category if any
-    if (activeCategory) {
-      filteredProducts = allProducts.filter(product => product.category === activeCategory);
-    }
-
-    const paginatedProducts = filteredProducts.slice(start, start + itemsPerPage);
-
-    paginatedProducts.forEach(product => {
-      const div = document.createElement('div');
-      div.className = 'item';
-      div.innerHTML = `
-        <img src="${product.image}" alt="${product.name}">
-        <span class="item_name">${product.name}</span>
-        <span class="item_description">${product.description}</span>
-        <span class="item_price">$${product.price}</span>
-        <button class="snipcart-add-item"
-          data-item-id="${product.id}"
-          data-item-price="${product.price}"
-          data-item-url="/${product.name.toLowerCase().replace(' ', '-')}"
-          data-item-description="${product.description}"
-          data-item-name="${product.name}">
-          Add to Cart
-        </button>
-      `;
-      gallery.appendChild(div);
-    });
-  }
-
-  function filterProducts(category = '', button) {
-    const items = document.querySelectorAll('.category-button');
-    items.forEach(item => item.classList.remove('active-category'));
-
-    if (button) {
-      button.classList.toggle('active-category');
-    }
-
-    // Toggle the category filter
-    activeCategory = category === activeCategory ? '' : category;
-
-    renderPage();
-  }
-
-  // Initial Page Render
+function goToPage(page) {
+  currentPage = page;
   renderPage();
+}
+
+function renderPage() {
+  const gallery = document.getElementById('gallery');
+  gallery.innerHTML = '';
+  const start = (currentPage - 1) * itemsPerPage;
+
+  let filteredProducts = allProducts;
+
+  // Filter by active category if any
+  if (activeCategory) {
+    filteredProducts = allProducts.filter(product => product.category === activeCategory);
+  }
+
+  const paginatedProducts = filteredProducts.slice(start, start + itemsPerPage);
+
+  paginatedProducts.forEach(product => {
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <img src="${product.image}" alt="${product.name}">
+      <span class="item_name">${product.name}</span>
+      <span class="item_description">${product.description}</span>
+      <span class="item_price">$${product.price}</span>
+      <button class="snipcart-add-item"
+        data-item-id="${product.id}"
+        data-item-price="${product.price}"
+        data-item-url="/${product.name.toLowerCase().replace(' ', '-')}"
+        data-item-description="${product.description}"
+        data-item-name="${product.name}">
+        Add to Cart
+      </button>
+    `;
+    gallery.appendChild(div);
+  });
+}
+
+function filterProducts(category = '', button) {
+  // Toggle the active category
+  if (category === activeCategory) {
+    // If the clicked category is the same as the active category, show all products
+    activeCategory = '';
+    button.classList.remove('active-category');  // Remove the active class
+  } else {
+    // If a different category is clicked, set it as the active category
+    activeCategory = category;
+    // Highlight the clicked category button
+    const buttons = document.querySelectorAll('.category-button');
+    buttons.forEach(button => button.classList.remove('active-category')); // Remove the active class from all buttons
+    button.classList.add('active-category'); // Add the active class to the clicked button
+  }
+  
+  // Re-render the page with the filtered products
+  renderPage();
+}
+
+// Initial Page Render
+renderPage();
 </script>
 </body>
 </html>
