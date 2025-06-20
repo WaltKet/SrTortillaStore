@@ -341,6 +341,20 @@
     </button>
   </div>
 
+<!-- Modal for Slideshow -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <img id="modal-img" src="" alt="">
+      <span id="modal-description"></span>
+      <button id="modal-close" onclick="closeModal()">Close</button>
+
+      <div class="modal-nav">
+        <button id="prev-slide" onclick="prevSlide()">Previous</button>
+        <button id="next-slide" onclick="nextSlide()">Next</button>
+      </div>
+    </div>
+  </div>
+
   <!-- More products as needed -->
 </section>
 
@@ -390,11 +404,42 @@
 let currentPage = 1;
 const itemsPerPage = 12;
 let activeCategory = '';  // No active category initially
+let currentIndex = 0;
 
 function goToPage(page) {
   currentPage = page;
   renderPage();
 }
+
+    // Open Modal and Set Product Data
+    function openModal(index) {
+      currentIndex = index;
+      const product = products[currentIndex];
+      document.getElementById('modal-img').src = product.image;
+      document.getElementById('modal-description').textContent = `${product.name}: ${product.description}`;
+      document.getElementById('modal').style.display = 'flex';
+    }
+
+    // Close Modal
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    // Navigate to Previous Product
+    function prevSlide() {
+      currentIndex = (currentIndex - 1 + products.length) % products.length;
+      const product = products[currentIndex];
+      document.getElementById('modal-img').src = product.image;
+      document.getElementById('modal-description').textContent = `${product.name}: ${product.description}`;
+    }
+
+    // Navigate to Next Product
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % products.length;
+      const product = products[currentIndex];
+      document.getElementById('modal-img').src = product.image;
+      document.getElementById('modal-description').textContent = `${product.name}: ${product.description}`;
+    }
 
 function renderPage() {
   const gallery = document.getElementById('gallery');
