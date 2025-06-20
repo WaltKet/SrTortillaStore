@@ -159,37 +159,42 @@
   </div>
 
   <script>
-    document.addEventListener('snipcart.ready', () => {
-      Snipcart.api.fields.registerCustomField({
-        location: 'shipping',
-        name: 'ShippingSameAsBilling',
-        label: 'Shipping address is the same as billing address',
-        type: 'checkbox',
-        required: false,
-        onChange: (field, value) => {
-          Snipcart.api.session.setShippingAddressCustomField("ShippingSameAsBilling", value);
-          if (value) {
-            Snipcart.api.steps.shipping.hide();
-          } else {
-            Snipcart.api.steps.shipping.show();
-          }
+  document.addEventListener('snipcart.ready', () => {
+    Snipcart.api.theme.customization.registerField({
+      id: "ShippingSameAsBilling",
+      label: "Shipping address is the same as billing address",
+      type: "checkbox",
+      location: "shipping",
+      required: false
+    });
+
+    Snipcart.events.on('customer.shippingaddress.changed', () => {
+      Snipcart.api.cart.get().then(cart => {
+        const field = cart.customFields.find(f => f.name === "ShippingSameAsBilling");
+        if (field && field.value === true) {
+          Snipcart.api.steps.shipping.hide();
+        } else {
+          Snipcart.api.steps.shipping.show();
         }
       });
+    });
 
-      Snipcart.api.shipping.setShippingMethods([{
+    Snipcart.api.shipping.setShippingMethods([
+      {
         id: 'us-shipping',
         name: 'Standard Shipping (US)',
         price: 0.00,
         countries: ['US']
-      }, {
+      },
+      {
         id: 'intl-shipping',
         name: 'International Shipping',
         price: 15.00,
         countries: ['*'],
         notCountries: ['US']
-      }]);
-    });
-  </script>
-
+      }
+    ]);
+  });
+</script>
 </body>
 </html>
