@@ -6,375 +6,164 @@
   <title>SrTortilla - Urban Art Gallery</title>
   <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.css" />
   <script async src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #111;
-      color: #fff;
-    }
-    header {
-      background-color: #1a1a1a;
-      padding: 20px;
-      text-align: center;
-      font-size: 2rem;
-      letter-spacing: 2px;
-      border-bottom: 2px solid #444;
-      position: relative;
-    }
-    .cart-button {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: #ff3c38;
-      color: white;
-      padding: 8px 15px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    .cart-button:hover {
-      background: #e52b27;
-    }
-    #search-bar {
-      text-align: center;
-      margin: 20px;
-    }
-    #search-input {
-      padding: 10px;
-      width: 300px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      grid-auto-rows: auto;
-      gap: 20px;
-      padding: 30px;
-    }
-    .item {
-      background: #222;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #333;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .item img {
-      width: 100%;
-      height: auto;
-      max-height: 200px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-    .item span {
-      display: block;
-      margin: 5px 0;
-    }
-    .snipcart-add-item {
-      background: #ff3c38;
-      color: white;
-      padding: 8px 15px;
-      border: none;
-      border-radius: 5px;
-      margin: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      text-decoration: none;
-      text-align: center;
-    }
-    .snipcart-add-item:hover {
-      background: #e52b27;
-    }
-    .pagination {
-      text-align: center;
-      padding-bottom: 30px;
-    }
-    .pagination button {
-      background-color: #333;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      margin: 5px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .pagination button.active {
-      background-color: #ff3c38;
-    }
-  </style>
+  <link rel="preload" as="fetch" href="/products.json" crossorigin="anonymous">
+  <script>
+    fetch('products.json')
+      .then(response => response.json())
+      .then(data => {
+        const ldJson = {
+          "@context": "http://schema.org",
+          "@type": "ItemList",
+          "itemListElement": data.map(product => ({
+            "@type": "Product",
+            "name": product.name,
+            "image": product.image,
+            "description": product.description,
+            "sku": product.id,
+            "offers": {
+              "@type": "Offer",
+              "price": product.price,
+              "priceCurrency": "USD",
+              "availability": "http://schema.org/InStock",
+              "url": product.url
+            }
+          }))
+        };
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.textContent = JSON.stringify(ldJson);
+        document.head.appendChild(script);
+      });
+  </script>
 </head>
 <body>
-  <header>
-    SrTortilla
-    <button class="snipcart-checkout cart-button">View Cart</button>
-  </header>
+<header>
+  SrTortilla
+  <button class="snipcart-checkout cart-button">View Cart</button>
+</header>
 
-  <div id="search-bar">
-    <input type="text" id="search-input" placeholder="Search for artwork by name...">
+<div id="search-bar">
+  <input type="text" id="search-input" placeholder="Search for artwork by name...">
+</div>
+
+<section class="gallery" id="gallery"></section>
+<div class="pagination" id="pagination"></div>
+
+<div id="modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background-color:rgba(0,0,0,0.9); z-index:1000; justify-content:center; align-items:center; flex-direction:column;">
+  <span id="modal-close" style="position:absolute; top:20px; right:30px; font-size:30px; color:white; cursor:pointer;">&times;</span>
+  <img id="modal-img" src="" alt="" style="max-width:90vw; max-height:60vh; border-radius:10px;">
+  <div id="modal-info" style="color:white; text-align:center; margin:10px;"></div>
+  <button id="modal-buy" class="snipcart-add-item" style="margin-top:10px;">Add to Cart</button>
+  <div style="margin-top:20px;">
+    <button id="prev-slide">Previous</button>
+    <button id="next-slide">Next</button>
   </div>
+</div>
 
-  <section class="gallery" id="gallery">
-    <div class="item">
-      <img src="https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png" alt="Artwork 1">
-      <span class="item_name">Artwork 1</span>
-      <span class="item_description">Limited edition spray art #1</span>
-      <span class="item_price">$60.00</span>
-      <button class="snipcart-add-item"
-        data-item-id="product-1"
-        data-item-price="60.00"
-        data-item-url="https://waltket.github.io/SrTortillaStore/"
-        data-item-description="Limited edition spray art #1"
-        data-item-name="Artwork 1">
-        Add to Cart
-      </button>
-    </div>
-    <div class="item">
-      <img src="https://waltket.github.io/SrTortillaStore/SHrekMusical.jpg" alt="Artwork 2">
-      <span class="item_name">Artwork 2</span>
-      <span class="item_description">Limited edition spray art #2</span>
-      <span class="item_price">$65.00</span>
-      <button class="snipcart-add-item"
-        data-item-id="product-2"
-        data-item-price="65.00"
-        data-item-url="https://waltket.github.io/SrTortillaStore/"
-        data-item-description="Limited edition spray art #2"
-        data-item-name="Artwork 2">
-        Add to Cart
-      </button>
-    </div>
-    <div class="item">
-      <img src="https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png" alt="Artwork 3">
-      <span class="item_name">Artwork 3</span>
-      <span class="item_description">Limited edition spray art #3</span>
-      <span class="item_price">$70.00</span>
-      <button class="snipcart-add-item"
-        data-item-id="product-3"
-        data-item-price="70.00"
-        data-item-url="https://waltket.github.io/SrTortillaStore/"
-        data-item-description="Limited edition spray art #3"
-        data-item-name="Artwork 3">
-        Add to Cart
-      </button>
-    </div>
-    <div class="item">
-      <img src="https://waltket.github.io/SrTortillaStore/SHrekMusical.jpg" alt="Artwork 4">
-      <span class="item_name">Artwork 4</span>
-      <span class="item_description">Limited edition spray art #4</span>
-      <span class="item_price">$75.00</span>
-      <button class="snipcart-add-item"
-        data-item-id="product-4"
-        data-item-price="75.00"
-        data-item-url="https://waltket.github.io/SrTortillaStore/"
-        data-item-description="Limited edition spray art #4"
-        data-item-name="Artwork 4">
-        Add to Cart
-      </button>
-    </div>
-    <div class="item">
-      <img src="https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png" alt="Artwork 5">
-      <span class="item_name">Artwork 5</span>
-      <span class="item_description">Limited edition spray art #5</span>
-      <span class="item_price">$80.00</span>
-      <button class="snipcart-add-item"
-        data-item-id="product-5"
-        data-item-price="80.00"
-        data-item-url="https://waltket.github.io/SrTortillaStore/"
-        data-item-description="Limited edition spray art #5"
-        data-item-name="Artwork 5">
-        Add to Cart
-      </button>
-    </div>
-<div class="item">
-  <img src="https://waltket.github.io/SrTortillaStore/SHrekMusical.jpg" alt="Artwork 6">
-  <span class="item_name">Artwork 6</span>
-  <span class="item_description">Limited edition spray art #6</span>
-  <span class="item_price">$85.00</span>
-  <button class="snipcart-add-item"
-    data-item-id="product-6"
-    data-item-price="85.00"
-    data-item-url="https://waltket.github.io/SrTortillaStore/"
-    data-item-description="Limited edition spray art #6"
-    data-item-name="Artwork 6">
-    Add to Cart
-  </button>
+<div hidden id="snipcart"
+  data-api-key="MzYxZGNmYWItNzQxMi00NmYyLWJmMTEtOGFmOGI4M2E2YWY0NjM4ODU4Mjk4OTA5OTQ5ODMy"
+  data-config-add-billing-address-checkbox="true"
+  data-config-show-country-selector="true"
+  data-config-shipping-sync-billing="true">
 </div>
-<div class="item">
-  <img src="https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png" alt="Artwork 7">
-  <span class="item_name">Artwork 7</span>
-  <span class="item_description">Limited edition spray art #7</span>
-  <span class="item_price">$90.00</span>
-  <button class="snipcart-add-item"
-    data-item-id="product-7"
-    data-item-price="90.00"
-    data-item-url="https://waltket.github.io/SrTortillaStore/"
-    data-item-description="Limited edition spray art #7"
-    data-item-name="Artwork 7">
-    Add to Cart
-  </button>
-</div>
-<div class="item">
-  <img src="https://waltket.github.io/SrTortillaStore/SHrekMusical.jpg" alt="Artwork 8">
-  <span class="item_name">Artwork 8</span>
-  <span class="item_description">Limited edition spray art #8</span>
-  <span class="item_price">$95.00</span>
-  <button class="snipcart-add-item"
-    data-item-id="product-8"
-    data-item-price="95.00"
-    data-item-url="https://waltket.github.io/SrTortillaStore/"
-    data-item-description="Limited edition spray art #8"
-    data-item-name="Artwork 8">
-    Add to Cart
-  </button>
-</div>
-<div class="item">
-  <img src="https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png" alt="Artwork 9">
-  <span class="item_name">Artwork 9</span>
-  <span class="item_description">Limited edition spray art #9</span>
-  <span class="item_price">$100.00</span>
-  <button class="snipcart-add-item"
-    data-item-id="product-9"
-    data-item-price="100.00"
-    data-item-url="https://waltket.github.io/SrTortillaStore/"
-    data-item-description="Limited edition spray art #9"
-    data-item-name="Artwork 9">
-    Add to Cart
-  </button>
-</div>
-<div class="item">
-  <img src="https://waltket.github.io/SrTortillaStore/SHrekMusical.jpg" alt="Artwork 10">
-  <span class="item_name">Artwork 10</span>
-  <span class="item_description">Limited edition spray art #10</span>
-  <span class="item_price">$105.00</span>
-  <button class="snipcart-add-item"
-    data-item-id="product-10"
-    data-item-price="105.00"
-    data-item-url="https://waltket.github.io/SrTortillaStore/"
-    data-item-description="Limited edition spray art #10"
-    data-item-name="Artwork 10">
-    Add to Cart
-  </button>
-</div>
-<div class="item">
-  <img src="https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png" alt="Artwork 11">
-  <span class="item_name">Artwork 11</span>
-  <span class="item_description">Limited edition spray art #11</span>
-  <span class="item_price">$110.00</span>
-  <button class="snipcart-add-item"
-    data-item-id="product-11"
-    data-item-price="110.00"
-    data-item-url="https://waltket.github.io/SrTortillaStore/"
-    data-item-description="Limited edition spray art #11"
-    data-item-name="Artwork 11">
-    Add to Cart
-  </button>
-</div>
-<div class="item">
-  <img src="https://waltket.github.io/SrTortillaStore/SHrekMusical.jpg" alt="Artwork 12">
-  <span class="item_name">Artwork 12</span>
-  <span class="item_description">Limited edition spray art #12</span>
-  <span class="item_price">$115.00</span>
-  <button class="snipcart-add-item"
-    data-item-id="product-12"
-    data-item-price="115.00"
-    data-item-url="https://waltket.github.io/SrTortillaStore/"
-    data-item-description="Limited edition spray art #12"
-    data-item-name="Artwork 12">
-    Add to Cart
-  </button>
-</div>
-<div class="item">
-  <img src="https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png" alt="Artwork 13">
-  <span class="item_name">Artwork 13</span>
-  <span class="item_description">Limited edition spray art #13</span>
-  <span class="item_price">$120.00</span>
-  <button class="snipcart-add-item"
-    data-item-id="product-13"
-    data-item-price="120.00"
-    data-item-url="https://waltket.github.io/SrTortillaStore/"
-    data-item-description="Limited edition spray art #13"
-    data-item-name="Artwork 13">
-    Add to Cart
-  </button>
-</div>
-<div class="item">
-  <img src="https://waltket.github.io/SrTortillaStore/SHrekMusical.jpg" alt="Artwork 14">
-  <span class="item_name">Artwork 14</span>
-  <span class="item_description">Limited edition spray art #14</span>
-  <span class="item_price">$125.00</span>
-  <button class="snipcart-add-item"
-    data-item-id="product-14"
-    data-item-price="125.00"
-    data-item-url="https://waltket.github.io/SrTortillaStore/"
-    data-item-description="Limited edition spray art #14"
-    data-item-name="Artwork 14">
-    Add to Cart
-  </button>
-</div>
-<div class="item">
-  <img src="https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png" alt="Artwork 15">
-  <span class="item_name">Artwork 15</span>
-  <span class="item_description">Limited edition spray art #15</span>
-  <span class="item_price">$130.00</span>
-  <button class="snipcart-add-item"
-    data-item-id="product-15"
-    data-item-price="130.00"
-    data-item-url="https://waltket.github.io/SrTortillaStore/"
-    data-item-description="Limited edition spray art #15"
-    data-item-name="Artwork 15">
-    Add to Cart
-  </button>
-</div>
-</section>
-  <div class="pagination" id="pagination"></div>
 
-  <div hidden id="snipcart"
-    data-api-key="MzYxZGNmYWItNzQxMi00NmYyLWJmMTEtOGFmOGI4M2E2YWY0NjM4ODU4Mjk4OTA5OTQ5ODMy"
-    data-config-add-billing-address-checkbox="true"
-    data-config-show-country-selector="true"
-    data-config-shipping-sync-billing="true">
-  </div>
+<script>
+  let allProducts = [];
+  let currentSlideIndex = 0;
+  const gallery = document.getElementById('gallery');
+  const pagination = document.getElementById('pagination');
+  const searchInput = document.getElementById('search-input');
+  const itemsPerPage = 12;
 
-  <script>
-    const allProducts = [...document.querySelectorAll('.item')];
-    const gallery = document.getElementById('gallery');
-    const pagination = document.getElementById('pagination');
-    const searchInput = document.getElementById('search-input');
-    const itemsPerPage = 12;
+  function renderProducts(products) {
+    allProducts = products;
+    updatePage(1);
+  }
 
-    const productHTML = allProducts.map(p => p.outerHTML);
-    let filteredHTML = productHTML.slice();
-    let totalPages = Math.ceil(filteredHTML.length / itemsPerPage);
+  function updatePage(page) {
+    gallery.innerHTML = '';
+    const filtered = filterProducts();
+    const start = (page - 1) * itemsPerPage;
+    const paginated = filtered.slice(start, start + itemsPerPage);
 
-    function renderPage(page) {
-      gallery.innerHTML = '';
-      const start = (page - 1) * itemsPerPage;
-      const end = start + itemsPerPage;
-      gallery.innerHTML = filteredHTML.slice(start, end).join('');
-
-      pagination.innerHTML = '';
-      for (let i = 1; i <= totalPages; i++) {
-        const btn = document.createElement('button');
-        btn.textContent = i;
-        if (i === page) btn.classList.add('active');
-        btn.addEventListener('click', () => renderPage(i));
-        pagination.appendChild(btn);
-      }
-    }
-
-    searchInput.addEventListener('input', () => {
-      const query = searchInput.value.toLowerCase();
-      filteredHTML = productHTML.filter(html => html.toLowerCase().includes(query));
-      totalPages = Math.ceil(filteredHTML.length / itemsPerPage);
-      renderPage(1);
+    paginated.forEach(product => {
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.innerHTML = `
+        <img src="${product.image}" alt="${product.name}">
+        <span class="item_name">${product.name}</span>
+        <span class="item_description">${product.description}</span>
+        <span class="item_price">$${product.price}</span>
+        <button class="snipcart-add-item"
+          data-item-id="${product.id}"
+          data-item-price="${product.price}"
+          data-item-url="${product.url}"
+          data-item-description="${product.description}"
+          data-item-name="${product.name}">
+          Add to Cart
+        </button>
+      `;
+      gallery.appendChild(div);
     });
 
-    window.addEventListener('DOMContentLoaded', () => renderPage(1));
-  </script>
-</body>
-</html>
+    setupImageClicks();
+    renderPagination(filtered.length, page);
+  }
+
+  function renderPagination(totalItems, currentPage) {
+    pagination.innerHTML = '';
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+      if (i === currentPage) btn.classList.add('active');
+      btn.onclick = () => updatePage(i);
+      pagination.appendChild(btn);
+    }
+  }
+
+  function filterProducts() {
+    const query = searchInput.value.toLowerCase();
+    return allProducts.filter(product => product.name.toLowerCase().includes(query));
+  }
+
+  searchInput.addEventListener('input', () => updatePage(1));
+
+  function setupImageClicks() {
+    const items = Array.from(document.querySelectorAll('.item'));
+    items.forEach((item, index) => {
+      item.querySelector('img').onclick = () => openModal(index);
+    });
+  }
+
+  function openModal(index) {
+    const filtered = filterProducts();
+    const product = filtered[index];
+    if (!product) return;
+
+    document.getElementById('modal-img').src = product.image;
+    document.getElementById('modal-info').innerHTML = `
+      <strong>${product.name}</strong><br>
+      ${product.description}<br>
+      <em>$${product.price}</em>
+    `;
+    const modalBuy = document.getElementById('modal-buy');
+    modalBuy.setAttribute('data-item-id', product.id);
+    modalBuy.setAttribute('data-item-price', product.price);
+    modalBuy.setAttribute('data-item-url', product.url);
+    modalBuy.setAttribute('data-item-description', product.description);
+    modalBuy.setAttribute('data-item-name', product.name);
+
+    document.getElementById('modal').style.display = 'flex';
+    currentSlideIndex = index;
+  }
+
+  document.getElementById('modal-close').onclick = () => document.getElementById('modal').style.display = 'none';
+  window.onclick = e => { if (e.target.id === 'modal') document.getElementById('modal').style.display = 'none'; };
+  document.getElementById('prev-slide').onclick = () => openModal((currentSlideIndex - 1 + filterProducts().length) % filterProducts().length);
+  document.getElementById('next-slide').onclick = () => openModal((currentSlideIndex + 1) % filterProducts().length);
+
+  fetch('products.json')
+    .then(response => response.json())
+    .then(data => renderProducts(data));
+</script>
