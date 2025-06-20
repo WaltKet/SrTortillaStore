@@ -32,10 +32,11 @@ fetch('categories.json')
   <link rel="preload" as="fetch" href="/products.json" crossorigin="anonymous">
   <script>
     fetch('products.json')
-    .then(response => response.json())
-    .then(data => {
-      window.allProductsMaster = data;
-      renderProducts(data);
+  .then(response => response.json())
+  .then(data => {
+    window.allProductsMaster = data;
+    renderProducts(data);
+  });
     });
         const script = document.createElement('script');
         script.type = 'application/ld+json';
