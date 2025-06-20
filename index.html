@@ -29,6 +29,22 @@
         container.appendChild(btn);
       });
     });
+
+  document.addEventListener('snipcart.ready', () => {
+    const observer = new MutationObserver(() => {
+      const count = document.querySelector('.snipcart-items-count');
+      if (count) {
+        count.textContent = Snipcart.store.getState().cart.items.count;
+      }
+    });
+    observer.observe(document.querySelector(".snipcart-checkout"), { childList: true, subtree: true });
+
+    Snipcart.store.subscribe(() => {
+      const count = Snipcart.store.getState().cart.items.count;
+      const counter = document.querySelector('.snipcart-items-count');
+      if (counter) counter.textContent = count;
+    });
+  });
   </script>
   <style>
     body {
@@ -61,6 +77,14 @@
     }
     .cart-button:hover {
       background: #e52b27;
+    }
+    .snipcart-items-count {
+      background-color: #fff;
+      color: #ff3c38;
+      border-radius: 50%;
+      padding: 2px 8px;
+      font-weight: bold;
+      margin-left: 10px;
     }
     #search-bar {
       text-align: center;
@@ -147,8 +171,12 @@
 <body>
 <header>
   SrTortilla
-  <button class="snipcart-checkout cart-button">View Cart</button>
+  <button class="snipcart-checkout cart-button">
+    View Cart <span class="snipcart-items-count"></span>
+  </button>
 </header>
+
+<!-- remaining HTML and script code unchanged -->
 
 <div id="categories-bar" style="text-align:center; padding: 15px;">
   <span id="category-buttons"></span>
