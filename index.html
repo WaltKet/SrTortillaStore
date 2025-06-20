@@ -90,6 +90,7 @@
           <button class="snipcart-add-item"
             data-item-id="${product.id}"
             data-item-price="${product.price}"
+            data-item-url="${product.url}"
             data-item-description="${product.description}"
             data-item-name="${product.name}">
             Add to Cart
@@ -278,7 +279,14 @@
     View Cart <span class="snipcart-items-count"></span>
   </button>
 </header>
-
+<button class="snipcart-add-item"
+  data-item-id="1"  <!-- Make sure each product has a unique ID -->
+  data-item-name="Art Piece 1"
+  data-item-price="19.99"
+  data-item-url="/product1"
+  data-item-description="Beautiful abstract art">
+  Add to Cart
+</button>
 <div id="categories-bar" style="text-align:center; padding: 15px;">
   <span id="category-buttons"></span>
 </div>
