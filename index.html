@@ -104,7 +104,36 @@
     <button class="snipcart-checkout cart-button">View Cart</button>
   </header>
 
-  <section class="gallery" id="gallery"></section>
+  <section class="gallery" id="gallery">
+    <!-- 20 Products -->
+    <!-- Images alternate between two known files -->
+    " + Array.from({ length: 20 }, (_, i) => {
+      const id = `product-${i + 1}`;
+      const name = `Artwork ${i + 1}`;
+      const price = (60 + i * 5).toFixed(2);
+      const description = `Limited edition spray art #${i + 1}`;
+      const image = i % 2 === 0
+        ? 'https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png'
+        : 'https://waltket.github.io/SrTortillaStore/SHrekMusical.jpg';
+      return `
+    <div class="item">
+      <img src="${image}" alt="${name}">
+      <span class="item_name">${name}</span>
+      <span class="item_description">${description}</span>
+      <span class="item_price">$${price}</span>
+      <button
+        class="snipcart-add-item"
+        data-item-id="${id}"
+        data-item-price="${price}"
+        data-item-url="https://waltket.github.io/SrTortillaStore/"
+        data-item-description="${description}"
+        data-item-name="${name}">
+        Add to Cart
+      </button>
+    </div>`;
+    }).join('
+') + "
+  </section>
 
   <div class="pagination" id="pagination"></div>
 
