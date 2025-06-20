@@ -7,28 +7,37 @@
   <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.css" />
   <script async src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
   <script>
-  fetch('categories.json')
-    .then(response => response.json())
-    .then(categories => {
-      const container = document.getElementById('category-buttons');
-      categories.forEach(category => {
-        const btn = document.createElement('button');
-        btn.textContent = category;
-        btn.className = 'category-button';
-        btn.onclick = () => {
-          const active = btn.classList.contains('active-category');
-          document.querySelectorAll('.category-button').forEach(b => b.classList.remove('active-category'));
-          if (!active) {
-            btn.classList.add('active-category');
-            searchInput.value = '';
-            renderProducts(window.allProductsMaster.filter(p => p.category === category));
-          } else {
-            renderProducts(window.allProductsMaster);
-          }
-        };
-        container.appendChild(btn);
+  document.addEventListener('DOMContentLoaded', () => {
+    fetch('categories.json')
+      .then(response => response.json())
+      .then(categories => {
+        const container = document.getElementById('category-buttons');
+        categories.forEach(category => {
+          const btn = document.createElement('button');
+          btn.textContent = category;
+          btn.className = 'category-button';
+          btn.onclick = () => {
+            const active = btn.classList.contains('active-category');
+            document.querySelectorAll('.category-button').forEach(b => b.classList.remove('active-category'));
+            if (!active) {
+              btn.classList.add('active-category');
+              searchInput.value = '';
+              renderProducts(window.allProductsMaster.filter(p => p.category === category));
+            } else {
+              renderProducts(window.allProductsMaster);
+            }
+          };
+          container.appendChild(btn);
+        });
       });
-    });
+
+    fetch('products.json')
+      .then(response => response.json())
+      .then(data => {
+        window.allProductsMaster = data;
+        renderProducts(data);
+      });
+  });
 
   document.addEventListener('snipcart.ready', () => {
     Snipcart.store.subscribe(() => {
@@ -51,13 +60,6 @@
       });
     }
   });
-
-  fetch('products.json')
-    .then(response => response.json())
-    .then(data => {
-      window.allProductsMaster = data;
-      renderProducts(data);
-    });
 
   let allProducts = [];
   let currentSlideIndex = 0;
@@ -154,6 +156,7 @@
   document.getElementById('prev-slide').onclick = () => openModal((currentSlideIndex - 1 + filterProducts().length) % filterProducts().length);
   document.getElementById('next-slide').onclick = () => openModal((currentSlideIndex + 1) % filterProducts().length);
   </script>
+
   <style>
     body {
       margin: 0;
