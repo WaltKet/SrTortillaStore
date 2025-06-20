@@ -367,19 +367,70 @@
   data-config-add-billing-address-checkbox="true"
   data-config-show-country-selector="true">
 </div>
-
 <script>
   // Static Product Filtering by Category
-  function filterProducts(category = '') {
-    const items = document.querySelectorAll('.item');
-    items.forEach(item => {
-      if (category === '' || item.getAttribute('data-category') === category || item.querySelector('.item_name').innerText.toLowerCase().includes(document.getElementById('search-input').value.toLowerCase())) {
-        item.style.display = 'block'; // Show item
-      } else {
-        item.style.display = 'none'; // Hide item
-      }
+  let allProducts = [
+    { id: 1, category: 'Art', name: 'Product 1', price: 19.99, image: 'product1.jpg' },
+    { id: 2, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'product2.jpg' },
+    { id: 3, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
+    { id: 4, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
+    { id: 5, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
+    { id: 6, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
+    { id: 7, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
+    { id: 8, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
+    { id: 9, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
+    { id: 10, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
+    { id: 11, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
+    { id: 12, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
+    { id: 13, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
+    // Add more products as needed
+  ];
+
+  let currentPage = 1;
+  const itemsPerPage = 12;
+
+  function goToPage(page) {
+    currentPage = page;
+    renderPage();
+  }
+
+  function renderPage() {
+    const gallery = document.getElementById('gallery');
+    gallery.innerHTML = '';
+    const start = (currentPage - 1) * itemsPerPage;
+    const paginatedProducts = allProducts.slice(start, start + itemsPerPage);
+
+    paginatedProducts.forEach(product => {
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.innerHTML = `
+        <img src="${product.image}" alt="${product.name}">
+        <span class="item_name">${product.name}</span>
+        <span class="item_description">${product.description}</span>
+        <span class="item_price">$${product.price}</span>
+        <button class="snipcart-add-item"
+          data-item-id="${product.id}"
+          data-item-price="${product.price}"
+          data-item-url="/${product.name.toLowerCase().replace(' ', '-')}"
+          data-item-description="${product.description}"
+          data-item-name="${product.name}">
+          Add to Cart
+        </button>
+      `;
+      gallery.appendChild(div);
     });
   }
+
+  function filterProducts(category = '') {
+    const filteredProducts = allProducts.filter(product => 
+      category === '' || product.category === category
+    );
+    allProducts = filteredProducts;
+    renderPage();
+  }
+
+  // Initial Page Render
+  renderPage();
 </script>
 </body>
 </html>
