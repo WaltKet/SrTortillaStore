@@ -39,7 +39,117 @@
   });
   </script>
   <style>
-    /* [styles unchanged] */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #111;
+      color: #fff;
+    }
+    header {
+      background-color: #1a1a1a;
+      padding: 20px;
+      text-align: center;
+      font-size: 2rem;
+      letter-spacing: 2px;
+      border-bottom: 2px solid #444;
+      position: relative;
+    }
+    .cart-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #ff3c38;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .cart-button:hover {
+      background: #e52b27;
+    }
+    #search-bar {
+      text-align: center;
+      padding: 20px;
+    }
+    #search-input {
+      padding: 10px;
+      width: 60%;
+      border-radius: 5px;
+      border: none;
+      font-size: 1rem;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 20px;
+      padding: 30px;
+    }
+    .item {
+      background: #222;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .item span {
+      display: block;
+      margin: 5px 0;
+    }
+    .snipcart-add-item {
+      background: #ff3c38;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      margin: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: none;
+      text-align: center;
+    }
+    .snipcart-add-item:hover {
+      background: #e52b27;
+    }
+    .pagination {
+      text-align: center;
+      padding-bottom: 30px;
+    }
+    .pagination button {
+      background-color: #333;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      margin: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .pagination button.active {
+      background-color: #ff3c38;
+    }
+    .category-button {
+      margin: 5px;
+      padding: 8px 12px;
+      border-radius: 5px;
+      border: none;
+      background-color: #333;
+      color: white;
+      cursor: pointer;
+    }
+    .category-button.active-category {
+      background-color: #ff3c38;
+    }
   </style>
 </head>
 <body>
@@ -132,18 +242,12 @@ function filterProducts() {
 
 searchInput.addEventListener('input', () => updatePage(1));
 
-gallery.addEventListener('click', (e) => {
-  if (e.target.tagName === 'IMG') {
-    const items = Array.from(gallery.querySelectorAll('.item'));
-    const index = items.findIndex(item => item.contains(e.target));
-    openModal(index);
-  }
-});
-
-document.getElementById('modal-close').onclick = () => document.getElementById('modal').style.display = 'none';
-window.onclick = e => { if (e.target.id === 'modal') document.getElementById('modal').style.display = 'none'; };
-document.getElementById('prev-slide').onclick = () => openModal((currentSlideIndex - 1 + filterProducts().length) % filterProducts().length);
-document.getElementById('next-slide').onclick = () => openModal((currentSlideIndex + 1) % filterProducts().length);
+function setupImageClicks() {
+  const items = Array.from(document.querySelectorAll('.item'));
+  items.forEach((item, index) => {
+    item.querySelector('img').onclick = () => openModal(index);
+  });
+}
 
 function openModal(index) {
   const filtered = filterProducts();
@@ -166,6 +270,11 @@ function openModal(index) {
   document.getElementById('modal').style.display = 'flex';
   currentSlideIndex = allProducts.findIndex(p => p.id === product.id);
 }
+
+document.getElementById('modal-close').onclick = () => document.getElementById('modal').style.display = 'none';
+window.onclick = e => { if (e.target.id === 'modal') document.getElementById('modal').style.display = 'none'; };
+document.getElementById('prev-slide').onclick = () => openModal((currentSlideIndex - 1 + filterProducts().length) % filterProducts().length);
+document.getElementById('next-slide').onclick = () => openModal((currentSlideIndex + 1) % filterProducts().length);
 
 fetch('products.json')
   .then(response => response.json())
