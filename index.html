@@ -5,30 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SrTortilla - Urban Art Gallery</title>
   <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.css" />
-  <script async src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
+  <script async src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js">fetch('categories.json')
+  .then(response => response.json())
+  .then(categories => {
+    const container = document.getElementById('category-buttons');
+    categories.forEach(category => {
+      const btn = document.createElement('button');
+      btn.textContent = category;
+      btn.style.margin = '5px';
+      btn.style.padding = '8px 12px';
+      btn.style.borderRadius = '5px';
+      btn.style.border = 'none';
+      btn.style.backgroundColor = '#333';
+      btn.style.color = 'white';
+      btn.style.cursor = 'pointer';
+      btn.onclick = () => {
+        searchInput.value = '';
+        renderProducts(window.allProductsMaster.filter(p => p.category === category));
+      };
+      container.appendChild(btn);
+    });
+  });
+</script>
   <link rel="preload" as="fetch" href="/products.json" crossorigin="anonymous">
   <script>
     fetch('products.json')
-      .then(response => response.json())
-      .then(data => {
-        const ldJson = {
-          "@context": "http://schema.org",
-          "@type": "ItemList",
-          "itemListElement": data.map(product => ({
-            "@type": "Product",
-            "name": product.name,
-            "image": product.image,
-            "description": product.description,
-            "sku": product.id,
-            "offers": {
-              "@type": "Offer",
-              "price": product.price,
-              "priceCurrency": "USD",
-              "availability": "http://schema.org/InStock",
-              "url": product.url
-            }
-          }))
-        };
+    .then(response => response.json())
+    .then(data => {
+      window.allProductsMaster = data;
+      renderProducts(data);
+    });
         const script = document.createElement('script');
         script.type = 'application/ld+json';
         script.textContent = JSON.stringify(ldJson);
@@ -143,6 +149,9 @@
   <button class="snipcart-checkout cart-button">View Cart</button>
 </header>
 
+<div id="categories-bar" style="text-align:center; padding: 15px;">
+  <span id="category-buttons"></span>
+</div>
 <div id="search-bar">
   <input type="text" id="search-input" placeholder="Search for artwork by name...">
 </div>
@@ -256,6 +265,8 @@
     modalBuy.setAttribute('data-item-name', product.name);
 
     document.getElementById('modal').style.display = 'flex';
+    currentSlideIndex = allProducts.findIndex(p => p.id === product.id);
+  }
     currentSlideIndex = index;
   }
 
