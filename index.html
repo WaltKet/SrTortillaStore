@@ -51,7 +51,7 @@
     }
     .gallery {
       display: grid;
-      grid-template-columns: repeat(6, 1fr); /* 6 columns */
+      grid-template-columns: repeat(6, 1fr); /* 6 columns per row */
       gap: 20px;
       padding: 30px;
     }
@@ -131,10 +131,10 @@
 <!-- Category Filter -->
 <div id="categories-bar" style="text-align:center; padding: 15px;">
   <span id="category-buttons">
-    <!-- Category Buttons (static example) -->
-    <button class="category-button" onclick="filterProducts('Art')">Art</button>
-    <button class="category-button" onclick="filterProducts('Sculptures')">Sculptures</button>
-    <button class="category-button" onclick="filterProducts('Paintings')">Paintings</button>
+    <!-- Static Category Buttons with Click Event for Toggling Active Class -->
+    <button class="category-button" onclick="filterProducts('Art', this)">Art</button>
+    <button class="category-button" onclick="filterProducts('Sculptures', this)">Sculptures</button>
+    <button class="category-button" onclick="filterProducts('Paintings', this)">Paintings</button>
   </span>
 </div>
 
@@ -143,11 +143,11 @@
   <input type="text" id="search-input" placeholder="Search for artwork by name..." oninput="filterProducts()">
 </div>
 
-<!-- Gallery -->
+ <!-- Gallery -->
 <section class="gallery" id="gallery">
   <!-- Static Product Items -->
   <div class="item" data-category="Art">
-    <img src="product1.jpg" alt="Product 1">
+    <img src="SHrekMusical.jpg" alt="Product 1">
     <span class="item_name">Product 1</span>
     <span class="item_description">Beautiful abstract art</span>
     <span class="item_price">$19.99</span>
@@ -162,7 +162,7 @@
   </div>
 
   <div class="item" data-category="Sculptures">
-    <img src="product2.jpg" alt="Product 2">
+    <img src="SHrekMusical.jpg" alt="Product 2">
     <span class="item_name">Product 2</span>
     <span class="item_description">Modern art piece</span>
     <span class="item_price">$29.99</span>
@@ -345,9 +345,10 @@
 </section>
 
 <!-- Pagination -->
-<div class="pagination">
-  <button>1</button>
-  <button>2</button>
+<div class="pagination" id="pagination">
+  <button onclick="goToPage(1)">1</button>
+  <button onclick="goToPage(2)">2</button>
+  <!-- More pagination buttons if necessary -->
 </div>
 
 <!-- Modal (Optional) -->
@@ -367,11 +368,12 @@
   data-config-add-billing-address-checkbox="true"
   data-config-show-country-selector="true">
 </div>
+
 <script>
-  // Static Product Filtering by Category
+ // Static Product Filtering by Category
   let allProducts = [
-    { id: 1, category: 'Art', name: 'Product 1', price: 19.99, image: 'product1.jpg' },
-    { id: 2, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'product2.jpg' },
+    { id: 1, category: 'Art', name: 'Product 1', price: 19.99, image: 'SHrekMusical.jpg' },
+    { id: 2, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
     { id: 3, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
     { id: 4, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
     { id: 5, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
@@ -385,7 +387,7 @@
     { id: 13, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
     // Add more products as needed
   ];
-
+  
   let currentPage = 1;
   const itemsPerPage = 12;
 
@@ -421,10 +423,15 @@
     });
   }
 
-  function filterProducts(category = '') {
-    const filteredProducts = allProducts.filter(product => 
-      category === '' || product.category === category
-    );
+  function filterProducts(category = '', button) {
+    const items = document.querySelectorAll('.category-button');
+    items.forEach(item => item.classList.remove('active-category'));
+
+    if (button) {
+      button.classList.toggle('active-category');
+    }
+
+    const filteredProducts = category ? allProducts.filter(product => product.category === category) : allProducts;
     allProducts = filteredProducts;
     renderPage();
   }
