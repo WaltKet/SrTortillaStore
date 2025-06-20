@@ -276,6 +276,9 @@
   document.getElementById('next-slide').onclick = () => openModal((currentSlideIndex + 1) % filterProducts().length);
 
   fetch('products.json')
-    .then(response => response.json())
-    .then(data => renderProducts(data));
+  .then(response => response.json())
+  .then(data => {
+    window.allProductsMaster = data;
+    renderProducts(data);
+  });
 </script>
