@@ -105,35 +105,217 @@
   </header>
 
   <section class="gallery" id="gallery">
-    <!-- 20 Products -->
-    <!-- Images alternate between two known files -->
-    " + Array.from({ length: 20 }, (_, i) => {
-      const id = `product-${i + 1}`;
-      const name = `Artwork ${i + 1}`;
-      const price = (60 + i * 5).toFixed(2);
-      const description = `Limited edition spray art #${i + 1}`;
-      const image = i % 2 === 0
-        ? 'https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png'
-        : 'https://waltket.github.io/SrTortillaStore/SHrekMusical.jpg';
-      return `
-    <div class="item">
-      <img src="${image}" alt="${name}">
-      <span class="item_name">${name}</span>
-      <span class="item_description">${description}</span>
-      <span class="item_price">$${price}</span>
-      <button
-        class="snipcart-add-item"
-        data-item-id="${id}"
-        data-item-price="${price}"
-        data-item-url="https://waltket.github.io/SrTortillaStore/"
-        data-item-description="${description}"
-        data-item-name="${name}">
-        Add to Cart
-      </button>
-    </div>`;
-    }).join('
-') + "
-  </section>
+  <div class="item">
+    <img src="https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png" alt="Artwork 1">
+    <span class="item_name">Artwork 1</span>
+    <span class="item_description">Limited edition spray art #1</span>
+    <span class="item_price">$60.00</span>
+    <button class="snipcart-add-item"
+      data-item-id="product-1"
+      data-item-price="60.00"
+      data-item-url="https://waltket.github.io/SrTortillaStore/"
+      data-item-description="Limited edition spray art #1"
+      data-item-name="Artwork 1">
+      Add to Cart
+    </button>
+  </div>
+  <div class="item">
+    <img src="https://waltket.github.io/SrTortillaStore/SHrekMusical.jpg" alt="Artwork 2">
+    <span class="item_name">Artwork 2</span>
+    <span class="item_description">Limited edition spray art #2</span>
+    <span class="item_price">$65.00</span>
+    <button class="snipcart-add-item"
+      data-item-id="product-2"
+      data-item-price="65.00"
+      data-item-url="https://waltket.github.io/SrTortillaStore/"
+      data-item-description="Limited edition spray art #2"
+      data-item-name="Artwork 2">
+      Add to Cart
+    </button>
+  </div>
+  <div class="item">
+    <img src="https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png" alt="Artwork 3">
+    <span class="item_name">Artwork 3</span>
+    <span class="item_description">Limited edition spray art #3</span>
+    <span class="item_price">$70.00</span>
+    <button class="snipcart-add-item"
+      data-item-id="product-3"
+      data-item-price="70.00"
+      data-item-url="https://waltket.github.io/SrTortillaStore/"
+      data-item-description="Limited edition spray art #3"
+      data-item-name="Artwork 3">
+      Add to Cart
+    </button>
+  </div>
+  <div class="item">
+    <img src="https://waltket.github.io/SrTortillaStore/SHrekMusical.jpg" alt="Artwork 4">
+    <span class="item_name">Artwork 4</span>
+    <span class="item_description">Limited edition spray art #4</span>
+    <span class="item_price">$75.00</span>
+    <button class="snipcart-add-item"
+      data-item-id="product-4"
+      data-item-price="75.00"
+      data-item-url="https://waltket.github.io/SrTortillaStore/"
+      data-item-description="Limited edition spray art #4"
+      data-item-name="Artwork 4">
+      Add to Cart
+    </button>
+  </div>
+  <div class="item">
+    <img src="https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png" alt="Artwork 5">
+    <span class="item_name">Artwork 5</span>
+    <span class="item_description">Limited edition spray art #5</span>
+    <span class="item_price">$80.00</span>
+    <button class="snipcart-add-item"
+      data-item-id="product-5"
+      data-item-price="80.00"
+      data-item-url="https://waltket.github.io/SrTortillaStore/"
+      data-item-description="Limited edition spray art #5"
+      data-item-name="Artwork 5">
+      Add to Cart
+    </button>
+  </div>
+  <div class="item">
+    <img src="https://waltket.github.io/SrTortillaStore/SHrekMusical.jpg" alt="Artwork 6">
+    <span class="item_name">Artwork 6</span>
+    <span class="item_description">Limited edition spray art #6</span>
+    <span class="item_price">$85.00</span>
+    <button class="snipcart-add-item"
+      data-item-id="product-6"
+      data-item-price="85.00"
+      data-item-url="https://waltket.github.io/SrTortillaStore/"
+      data-item-description="Limited edition spray art #6"
+      data-item-name="Artwork 6">
+      Add to Cart
+    </button>
+  </div>
+  <div class="item">
+    <img src="https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png" alt="Artwork 7">
+    <span class="item_name">Artwork 7</span>
+    <span class="item_description">Limited edition spray art #7</span>
+    <span class="item_price">$90.00</span>
+    <button class="snipcart-add-item"
+      data-item-id="product-7"
+      data-item-price="90.00"
+      data-item-url="https://waltket.github.io/SrTortillaStore/"
+      data-item-description="Limited edition spray art #7"
+      data-item-name="Artwork 7">
+      Add to Cart
+    </button>
+  </div>
+  <div class="item">
+    <img src="https://waltket.github.io/SrTortillaStore/SHrekMusical.jpg" alt="Artwork 8">
+    <span class="item_name">Artwork 8</span>
+    <span class="item_description">Limited edition spray art #8</span>
+    <span class="item_price">$95.00</span>
+    <button class="snipcart-add-item"
+      data-item-id="product-8"
+      data-item-price="95.00"
+      data-item-url="https://waltket.github.io/SrTortillaStore/"
+      data-item-description="Limited edition spray art #8"
+      data-item-name="Artwork 8">
+      Add to Cart
+    </button>
+  </div>
+  <div class="item">
+    <img src="https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png" alt="Artwork 9">
+    <span class="item_name">Artwork 9</span>
+    <span class="item_description">Limited edition spray art #9</span>
+    <span class="item_price">$100.00</span>
+    <button class="snipcart-add-item"
+      data-item-id="product-9"
+      data-item-price="100.00"
+      data-item-url="https://waltket.github.io/SrTortillaStore/"
+      data-item-description="Limited edition spray art #9"
+      data-item-name="Artwork 9">
+      Add to Cart
+    </button>
+  </div>
+  <div class="item">
+    <img src="https://waltket.github.io/SrTortillaStore/SHrekMusical.jpg" alt="Artwork 10">
+    <span class="item_name">Artwork 10</span>
+    <span class="item_description">Limited edition spray art #10</span>
+    <span class="item_price">$105.00</span>
+    <button class="snipcart-add-item"
+      data-item-id="product-10"
+      data-item-price="105.00"
+      data-item-url="https://waltket.github.io/SrTortillaStore/"
+      data-item-description="Limited edition spray art #10"
+      data-item-name="Artwork 10">
+      Add to Cart
+    </button>
+  </div>
+  <div class="item">
+    <img src="https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png" alt="Artwork 11">
+    <span class="item_name">Artwork 11</span>
+    <span class="item_description">Limited edition spray art #11</span>
+    <span class="item_price">$110.00</span>
+    <button class="snipcart-add-item"
+      data-item-id="product-11"
+      data-item-price="110.00"
+      data-item-url="https://waltket.github.io/SrTortillaStore/"
+      data-item-description="Limited edition spray art #11"
+      data-item-name="Artwork 11">
+      Add to Cart
+    </button>
+  </div>
+  <div class="item">
+    <img src="https://waltket.github.io/SrTortillaStore/SHrekMusical.jpg" alt="Artwork 12">
+    <span class="item_name">Artwork 12</span>
+    <span class="item_description">Limited edition spray art #12</span>
+    <span class="item_price">$115.00</span>
+    <button class="snipcart-add-item"
+      data-item-id="product-12"
+      data-item-price="115.00"
+      data-item-url="https://waltket.github.io/SrTortillaStore/"
+      data-item-description="Limited edition spray art #12"
+      data-item-name="Artwork 12">
+      Add to Cart
+    </button>
+  </div>
+  <div class="item">
+    <img src="https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png" alt="Artwork 13">
+    <span class="item_name">Artwork 13</span>
+    <span class="item_description">Limited edition spray art #13</span>
+    <span class="item_price">$120.00</span>
+    <button class="snipcart-add-item"
+      data-item-id="product-13"
+      data-item-price="120.00"
+      data-item-url="https://waltket.github.io/SrTortillaStore/"
+      data-item-description="Limited edition spray art #13"
+      data-item-name="Artwork 13">
+      Add to Cart
+    </button>
+  </div>
+  <div class="item">
+    <img src="https://waltket.github.io/SrTortillaStore/SHrekMusical.jpg" alt="Artwork 14">
+    <span class="item_name">Artwork 14</span>
+    <span class="item_description">Limited edition spray art #14</span>
+    <span class="item_price">$125.00</span>
+    <button class="snipcart-add-item"
+      data-item-id="product-14"
+      data-item-price="125.00"
+      data-item-url="https://waltket.github.io/SrTortillaStore/"
+      data-item-description="Limited edition spray art #14"
+      data-item-name="Artwork 14">
+      Add to Cart
+    </button>
+  </div>
+  <div class="item">
+    <img src="https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png" alt="Artwork 15">
+    <span class="item_name">Artwork 15</span>
+    <span class="item_description">Limited edition spray art #15</span>
+    <span class="item_price">$130.00</span>
+    <button class="snipcart-add-item"
+      data-item-id="product-15"
+      data-item-price="130.00"
+      data-item-url="https://waltket.github.io/SrTortillaStore/"
+      data-item-description="Limited edition spray art #15"
+      data-item-name="Artwork 15">
+      Add to Cart
+    </button>
+  </div>
+</section>
 
   <div class="pagination" id="pagination"></div>
 
