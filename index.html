@@ -31,130 +31,131 @@
         });
       });
 
-	fetch('products.json')
-	  .then(response => response.json())
-	  .then(data => {
-		window.allProductsMaster = data;
-		renderProducts(data);
-	  })
-	  .catch(error => console.error("Error loading products:", error));
+    fetch('products.json')
+      .then(response => response.json())
+      .then(data => {
+        window.allProductsMaster = data;
+        renderProducts(data);
+      })
+      .catch(error => console.error("Error loading products:", error));
 
-  document.addEventListener('snipcart.ready', () => {
-    Snipcart.store.subscribe(() => {
-      const count = Snipcart.store.getState().cart.items.count;
-      const counter = document.querySelector('.snipcart-items-count');
-      if (counter) counter.textContent = count;
+    document.addEventListener('snipcart.ready', () => {
+      Snipcart.store.subscribe(() => {
+        const count = Snipcart.store.getState().cart.items.count;
+        const counter = document.querySelector('.snipcart-items-count');
+        if (counter) counter.textContent = count;
+      });
     });
-  });
 
-  document.addEventListener("click", function (e) {
-    if (e.target && e.target.classList.contains("snipcart-add-item")) {
-      e.preventDefault();
-      e.stopPropagation();
-      Snipcart.api.cart.items.add({
-        id: e.target.getAttribute("data-item-id"),
-        name: e.target.getAttribute("data-item-name"),
-        url: e.target.getAttribute("data-item-url"),
-        price: parseFloat(e.target.getAttribute("data-item-price")),
-        description: e.target.getAttribute("data-item-description")
+    document.addEventListener("click", function (e) {
+      if (e.target && e.target.classList.contains("snipcart-add-item")) {
+        e.preventDefault();
+        e.stopPropagation();
+        Snipcart.api.cart.items.add({
+          id: e.target.getAttribute("data-item-id"),
+          name: e.target.getAttribute("data-item-name"),
+          url: e.target.getAttribute("data-item-url"),
+          price: parseFloat(e.target.getAttribute("data-item-price")),
+          description: e.target.getAttribute("data-item-description")
+        });
+      }
+    });
+
+    let allProducts = [];
+    let currentSlideIndex = 0;
+    const gallery = document.getElementById('gallery');
+    const pagination = document.getElementById('pagination');
+    const searchInput = document.getElementById('search-input');
+    const itemsPerPage = 12;
+
+    function renderProducts(products) {
+      allProducts = products;
+      updatePage(1);
+    }
+
+    function updatePage(page) {
+      gallery.innerHTML = '';
+      const filtered = filterProducts();
+      const start = (page - 1) * itemsPerPage;
+      const paginated = filtered.slice(start, start + itemsPerPage);
+
+      paginated.forEach(product => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+          <img src="${product.image}" alt="${product.name}">
+          <span class="item_name">${product.name}</span>
+          <span class="item_description">${product.description}</span>
+          <span class="item_price">$${product.price}</span>
+          <button class="snipcart-add-item"
+            data-item-id="${product.id}"
+            data-item-price="${product.price}"
+            data-item-url="${product.url}"
+            data-item-description="${product.description}"
+            data-item-name="${product.name}">
+            Add to Cart
+          </button>
+        `;
+        gallery.appendChild(div);
+      });
+
+      setupImageClicks();
+      renderPagination(filtered.length, page);
+    }
+
+    function renderPagination(totalItems, currentPage) {
+      pagination.innerHTML = '';
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        if (i === currentPage) btn.classList.add('active');
+        btn.onclick = () => updatePage(i);
+        pagination.appendChild(btn);
+      }
+    }
+
+    function filterProducts() {
+      const query = searchInput.value.toLowerCase();
+      return allProducts.filter(product => product.name.toLowerCase().includes(query));
+    }
+
+    searchInput.addEventListener('input', () => updatePage(1));
+
+    function setupImageClicks() {
+      const items = Array.from(document.querySelectorAll('.item'));
+      items.forEach((item, index) => {
+        item.querySelector('img').onclick = () => openModal(index);
       });
     }
-  });
 
-  let allProducts = [];
-  let currentSlideIndex = 0;
-  const gallery = document.getElementById('gallery');
-  const pagination = document.getElementById('pagination');
-  const searchInput = document.getElementById('search-input');
-  const itemsPerPage = 12;
+    function openModal(index) {
+      const filtered = filterProducts();
+      const product = filtered[index];
+      if (!product) return;
 
-  function renderProducts(products) {
-    allProducts = products;
-    updatePage(1);
-  }
-
-  function updatePage(page) {
-    gallery.innerHTML = '';
-    const filtered = filterProducts();
-    const start = (page - 1) * itemsPerPage;
-    const paginated = filtered.slice(start, start + itemsPerPage);
-
-    paginated.forEach(product => {
-      const div = document.createElement('div');
-      div.className = 'item';
-      div.innerHTML = `
-        <img src="${product.image}" alt="${product.name}">
-        <span class="item_name">${product.name}</span>
-        <span class="item_description">${product.description}</span>
-        <span class="item_price">$${product.price}</span>
-        <button class="snipcart-add-item"
-          data-item-id="${product.id}"
-          data-item-price="${product.price}"
-          data-item-url="${product.url}"
-          data-item-description="${product.description}"
-          data-item-name="${product.name}">
-          Add to Cart
-        </button>
+      document.getElementById('modal-img').src = product.image;
+      document.getElementById('modal-info').innerHTML = `
+        <strong>${product.name}</strong><br>
+        ${product.description}<br>
+        <em>$${product.price}</em>
       `;
-      gallery.appendChild(div);
-    });
+      const modalBuy = document.getElementById('modal-buy');
+      modalBuy.setAttribute('data-item-id', product.id);
+      modalBuy.setAttribute('data-item-price', product.price);
+      modalBuy.setAttribute('data-item-url', product.url);
+      modalBuy.setAttribute('data-item-description', product.description);
+      modalBuy.setAttribute('data-item-name', product.name);
 
-    setupImageClicks();
-    renderPagination(filtered.length, page);
-  }
-
-  function renderPagination(totalItems, currentPage) {
-    pagination.innerHTML = '';
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-    for (let i = 1; i <= totalPages; i++) {
-      const btn = document.createElement('button');
-      btn.textContent = i;
-      if (i === currentPage) btn.classList.add('active');
-      btn.onclick = () => updatePage(i);
-      pagination.appendChild(btn);
+      document.getElementById('modal').style.display = 'flex';
+      currentSlideIndex = allProducts.findIndex(p => p.id === product.id);
     }
-  }
 
-  function filterProducts() {
-    const query = searchInput.value.toLowerCase();
-    return allProducts.filter(product => product.name.toLowerCase().includes(query));
-  }
-
-  searchInput.addEventListener('input', () => updatePage(1));
-
-  function setupImageClicks() {
-    const items = Array.from(document.querySelectorAll('.item'));
-    items.forEach((item, index) => {
-      item.querySelector('img').onclick = () => openModal(index);
-    });
-  }
-
-  function openModal(index) {
-    const filtered = filterProducts();
-    const product = filtered[index];
-    if (!product) return;
-
-    document.getElementById('modal-img').src = product.image;
-    document.getElementById('modal-info').innerHTML = `
-      <strong>${product.name}</strong><br>
-      ${product.description}<br>
-      <em>$${product.price}</em>
-    `;
-    const modalBuy = document.getElementById('modal-buy');
-    modalBuy.setAttribute('data-item-id', product.id);
-    modalBuy.setAttribute('data-item-price', product.price);
-    modalBuy.setAttribute('data-item-url', product.url);
-    modalBuy.setAttribute('data-item-description', product.description);
-    modalBuy.setAttribute('data-item-name', product.name);
-
-    document.getElementById('modal').style.display = 'flex';
-    currentSlideIndex = allProducts.findIndex(p => p.id === product.id);
-  }
-
-  document.getElementById('modal-close').onclick = () => document.getElementById('modal').style.display = 'none';
-  window.onclick = e => { if (e.target.id === 'modal') document.getElementById('modal').style.display = 'none'; };
-  document.getElementById('prev-slide').onclick = () => openModal((currentSlideIndex - 1 + filterProducts().length) % filterProducts().length);
-  document.getElementById('next-slide').onclick = () => openModal((currentSlideIndex + 1) % filterProducts().length);
+    document.getElementById('modal-close').onclick = () => document.getElementById('modal').style.display = 'none';
+    window.onclick = e => { if (e.target.id === 'modal') document.getElementById('modal').style.display = 'none'; };
+    document.getElementById('prev-slide').onclick = () => openModal((currentSlideIndex - 1 + filterProducts().length) % filterProducts().length);
+    document.getElementById('next-slide').onclick = () => openModal((currentSlideIndex + 1) % filterProducts().length);
+  });
   </script>
 
   <style>
