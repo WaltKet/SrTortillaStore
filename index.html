@@ -31,13 +31,13 @@
         });
       });
 
-    fetch('products.json')
-      .then(response => response.json())
-      .then(data => {
-        window.allProductsMaster = data;
-        renderProducts(data);
-      });
-  });
+	fetch('products.json')
+	  .then(response => response.json())
+	  .then(data => {
+		window.allProductsMaster = data;
+		renderProducts(data);
+	  })
+	  .catch(error => console.error("Error loading products:", error));
 
   document.addEventListener('snipcart.ready', () => {
     Snipcart.store.subscribe(() => {
