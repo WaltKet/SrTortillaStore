@@ -387,7 +387,6 @@
     { id: 13, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
     // Add more products as needed
   ];
-  
 let currentPage = 1;
 const itemsPerPage = 12;
 let activeCategory = '';  // No active category initially
@@ -432,23 +431,31 @@ function renderPage() {
   });
 }
 
-function filterProducts(category = '', button) {
+function filterProducts(category = '', button = null) {
+  const searchTerm = document.getElementById('search-input').value.toLowerCase();
+  
+  // Search filter if there is a search term in the input
+  let filteredProducts = allProducts.filter(product => 
+    product.name.toLowerCase().includes(searchTerm) && 
+    (category === '' || product.category === category)
+  );
+
   // Toggle the active category
   if (category === activeCategory) {
-    // If the clicked category is the same as the active category, show all products
-    activeCategory = '';
-    button.classList.remove('active-category');  // Remove the active class
+    activeCategory = '';  // Deselect the category
+    if (button) {
+      button.classList.remove('active-category');
+    }
   } else {
-    // If a different category is clicked, set it as the active category
     activeCategory = category;
-    // Highlight the clicked category button
     const buttons = document.querySelectorAll('.category-button');
-    buttons.forEach(button => button.classList.remove('active-category')); // Remove the active class from all buttons
-    button.classList.add('active-category'); // Add the active class to the clicked button
+    buttons.forEach(btn => btn.classList.remove('active-category')); // Remove active class from all buttons
+    if (button) {
+      button.classList.add('active-category');  // Add active class to clicked button
+    }
   }
-  
-  // Re-render the page with the filtered products
-  renderPage();
+
+  renderPage(filteredProducts);
 }
 
 // Initial Page Render
