@@ -391,32 +391,68 @@
   </script>
 
   <div id="imageModal" class="modal">
-    <span class="modal-close" id="modalClose">&times;</span>
-    <img class="modal-content" id="modalImage">
+  <span class="modal-close" id="modalClose">&times;</span>
+  <div class="modal-slider">
+    <img class="modal-content" id="modalImage" src="" alt="">
+    <div id="modalInfo" style="color: white; text-align: center; margin-top: 10px;"></div>
+    <button id="modalBuy" class="snipcart-add-item" style="background: #ff3c38; color: white; padding: 8px 15px; border: none; border-radius: 5px; margin: 10px auto; cursor: pointer; font-weight: bold; text-decoration: none; text-align: center; display: block;">
+  Add to Cart
+</button>
+    <div style="text-align:center; margin-top: 20px;">
+      <button id="prevBtn">Previous</button>
+      <button id="nextBtn">Next</button>
+    </div>
   </div>
+</div>
 
-  <script>
-    const modal = document.getElementById("imageModal");
-    const modalImg = document.getElementById("modalImage");
-    const modalClose = document.getElementById("modalClose");
+<script>
+const modal = document.getElementById("imageModal");
+const modalImg = document.getElementById("modalImage");
+const modalClose = document.getElementById("modalClose");
+const modalInfo = document.getElementById("modalInfo");
+const modalBuy = document.getElementById("modalBuy");
+const allItems = Array.from(document.querySelectorAll(".item"));
+let currentIndex = 0;
 
-    document.body.addEventListener('click', function (e) {
-      if (e.target.tagName === 'IMG' && e.target.closest('.item')) {
-        modal.style.display = "block";
-        modalImg.src = e.target.src;
-        modalImg.alt = e.target.alt;
-      }
-    });
+function openModal(index) {
+  const item = allItems[index];
+  const img = item.querySelector("img");
+  const name = item.querySelector(".item_name").textContent;
+  const desc = item.querySelector(".item_description").textContent;
+  const price = item.querySelector(".item_price").textContent;
 
-    modalClose.onclick = function () {
-      modal.style.display = "none";
-    }
+  modalImg.src = img.src;
+  modalImg.alt = name;
+  modalInfo.innerHTML = `<strong>${name}</strong><br>${desc}<br><em>${price}</em>`;
+  modalBuy.setAttribute("data-item-id", item.querySelector(".snipcart-add-item").getAttribute("data-item-id"));
+  modalBuy.setAttribute("data-item-price", item.querySelector(".snipcart-add-item").getAttribute("data-item-price"));
+  modalBuy.setAttribute("data-item-url", item.querySelector(".snipcart-add-item").getAttribute("data-item-url"));
+  modalBuy.setAttribute("data-item-description", desc);
+  modalBuy.setAttribute("data-item-name", name);
 
-    window.onclick = function (e) {
-      if (e.target == modal) {
-        modal.style.display = "none";
-      }
-    }
-  </script>
+  modal.style.display = "block";
+  currentIndex = index;
+}
+
+document.body.addEventListener('click', function (e) {
+  if (e.target.tagName === 'IMG' && e.target.closest('.item')) {
+    const clickedIndex = allItems.findIndex(item => item.contains(e.target));
+    openModal(clickedIndex);
+  }
+});
+
+modalClose.onclick = () => modal.style.display = "none";
+window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; };
+
+document.getElementById("prevBtn").onclick = function () {
+  currentIndex = (currentIndex - 1 + allItems.length) % allItems.length;
+  openModal(currentIndex);
+};
+
+document.getElementById("nextBtn").onclick = function () {
+  currentIndex = (currentIndex + 1) % allItems.length;
+  openModal(currentIndex);
+};
+</script>
 </body>
 </html>
