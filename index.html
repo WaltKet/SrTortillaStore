@@ -29,14 +29,6 @@
         container.appendChild(btn);
       });
     });
-
-  document.addEventListener('snipcart.ready', () => {
-    Snipcart.store.subscribe(() => {
-      const count = Snipcart.store.getState().cart.items.count;
-      const counter = document.querySelector('.snipcart-items-count');
-      if (counter) counter.textContent = count;
-    });
-  });
   </script>
   <style>
     body {
@@ -69,14 +61,6 @@
     }
     .cart-button:hover {
       background: #e52b27;
-    }
-    .snipcart-items-count {
-      background-color: #fff;
-      color: #ff3c38;
-      border-radius: 50%;
-      padding: 2px 8px;
-      font-weight: bold;
-      margin-left: 10px;
     }
     #search-bar {
       text-align: center;
@@ -163,11 +147,9 @@
 <body>
 <header>
   SrTortilla
-  <button class="snipcart-checkout cart-button">
-    View Cart <span class="snipcart-items-count"></span>
-  </button>
+  <button class="snipcart-checkout cart-button">View Cart</button>
 </header>
-<!-- remaining HTML and script code unchanged -->
+
 <div id="categories-bar" style="text-align:center; padding: 15px;">
   <span id="category-buttons"></span>
 </div>
@@ -182,7 +164,7 @@
   <span id="modal-close" style="position:absolute; top:20px; right:30px; font-size:30px; color:white; cursor:pointer;">&times;</span>
   <img id="modal-img" src="" alt="" style="max-width:90vw; max-height:60vh; border-radius:10px;">
   <div id="modal-info" style="color:white; text-align:center; margin:10px;"></div>
-  <button id="modal-buy" class="snipcart-add-item" style="margin-top:10px;">Add to Cart</button>
+  <button id="modal-buy" class="snipcart-add-item" style="margin-top:10px;" data-item-has-additional-fields="true">Add to Cart</button>
   <div style="margin-top:20px;">
     <button id="prev-slide">Previous</button>
     <button id="next-slide">Next</button>
@@ -193,7 +175,8 @@
   data-api-key="MzYxZGNmYWItNzQxMi00NmYyLWJmMTEtOGFmOGI4M2E2YWY0NjM4ODU4Mjk4OTA5OTQ5ODMy"
   data-config-add-billing-address-checkbox="true"
   data-config-show-country-selector="true"
-  data-config-shipping-sync-billing="true">
+  data-config-shipping-sync-billing="true"
+  data-config-modal-style="side">
 </div>
 
 <script>
@@ -228,7 +211,8 @@
           data-item-price="${product.price}"
           data-item-url="${product.url}"
           data-item-description="${product.description}"
-          data-item-name="${product.name}">
+          data-item-name="${product.name}"
+          data-item-has-additional-fields="true">
           Add to Cart
         </button>
       `;
