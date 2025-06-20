@@ -32,12 +32,27 @@ fetch('categories.json')
   <link rel="preload" as="fetch" href="/products.json" crossorigin="anonymous">
   <script>
     fetch('products.json')
-  .then(response => response.json())
-  .then(data => {
-    window.allProductsMaster = data;
-    renderProducts(data);
-  });
-    });
+      .then(response => response.json())
+      .then(data => {
+        const ldJson = {
+          "@context": "http://schema.org",
+          "@type": "ItemList",
+          "itemListElement": data.map(product => ({
+            "@type": "Product",
+            "name": product.name,
+            "image": product.image,
+			"category": product.category,
+            "description": product.description,
+            "sku": product.id,
+            "offers": {
+              "@type": "Offer",
+              "price": product.price,
+              "priceCurrency": "USD",
+              "availability": "http://schema.org/InStock",
+              "url": product.url
+            }
+          }))
+        };
         const script = document.createElement('script');
         script.type = 'application/ld+json';
         script.textContent = JSON.stringify(ldJson);
