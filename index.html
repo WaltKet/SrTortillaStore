@@ -29,153 +29,25 @@
         container.appendChild(btn);
       });
     });
-  </script>
-  <script>
-    fetch('products.json')
-      .then(response => response.json())
-      .then(data => {
-        const ldJson = {
-          "@context": "http://schema.org",
-          "@type": "ItemList",
-          "itemListElement": data.map(product => ({
-            "@type": "Product",
-            "name": product.name,
-            "image": product.image,
-            "description": product.description,
-            "sku": product.id,
-            "offers": {
-              "@type": "Offer",
-              "price": product.price,
-              "priceCurrency": "USD",
-              "availability": "http://schema.org/InStock",
-              "url": product.url
-            }
-          }))
-        };
-        const script = document.createElement('script');
-        script.type = 'application/ld+json';
-        script.textContent = JSON.stringify(ldJson);
-        document.head.appendChild(script);
-      });
+
+  document.addEventListener('snipcart.ready', () => {
+    Snipcart.store.subscribe(() => {
+      const count = Snipcart.store.getState().cart.items.count;
+      const counter = document.querySelector('.snipcart-items-count');
+      if (counter) counter.textContent = count;
+    });
+  });
   </script>
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #111;
-      color: #fff;
-    }
-    header {
-      background-color: #1a1a1a;
-      padding: 20px;
-      text-align: center;
-      font-size: 2rem;
-      letter-spacing: 2px;
-      border-bottom: 2px solid #444;
-      position: relative;
-    }
-    .cart-button {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: #ff3c38;
-      color: white;
-      padding: 8px 15px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    .cart-button:hover {
-      background: #e52b27;
-    }
-    #search-bar {
-      text-align: center;
-      padding: 20px;
-    }
-    #search-input {
-      padding: 10px;
-      width: 60%;
-      border-radius: 5px;
-      border: none;
-      font-size: 1rem;
-    }
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 20px;
-      padding: 30px;
-    }
-    .item {
-      background: #222;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #333;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .item img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .item span {
-      display: block;
-      margin: 5px 0;
-    }
-    .snipcart-add-item {
-      background: #ff3c38;
-      color: white;
-      padding: 8px 15px;
-      border: none;
-      border-radius: 5px;
-      margin: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      text-decoration: none;
-      text-align: center;
-    }
-    .snipcart-add-item:hover {
-      background: #e52b27;
-    }
-    .pagination {
-      text-align: center;
-      padding-bottom: 30px;
-    }
-    .pagination button {
-      background-color: #333;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      margin: 5px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .pagination button.active {
-      background-color: #ff3c38;
-    }
-    .category-button {
-      margin: 5px;
-      padding: 8px 12px;
-      border-radius: 5px;
-      border: none;
-      background-color: #333;
-      color: white;
-      cursor: pointer;
-    }
-    .category-button.active-category {
-      background-color: #ff3c38;
-    }
+    /* [styles unchanged] */
   </style>
 </head>
 <body>
 <header>
   SrTortilla
-  <button class="snipcart-checkout cart-button">View Cart</button>
+  <button class="snipcart-checkout cart-button">
+    View Cart <span class="snipcart-items-count"></span>
+  </button>
 </header>
 
 <div id="categories-bar" style="text-align:center; padding: 15px;">
@@ -184,7 +56,6 @@
 <div id="search-bar">
   <input type="text" id="search-input" placeholder="Search for artwork by name...">
 </div>
-
 <section class="gallery" id="gallery"></section>
 <div class="pagination" id="pagination"></div>
 
@@ -199,6 +70,111 @@
   </div>
 </div>
 
+<script>
+let allProducts = [];
+let currentSlideIndex = 0;
+const gallery = document.getElementById('gallery');
+const pagination = document.getElementById('pagination');
+const searchInput = document.getElementById('search-input');
+const itemsPerPage = 12;
+
+function renderProducts(products) {
+  allProducts = products;
+  updatePage(1);
+}
+
+function updatePage(page) {
+  gallery.innerHTML = '';
+  const filtered = filterProducts();
+  const start = (page - 1) * itemsPerPage;
+  const paginated = filtered.slice(start, start + itemsPerPage);
+
+  paginated.forEach(product => {
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <img src="${product.image}" alt="${product.name}">
+      <span class="item_name">${product.name}</span>
+      <span class="item_description">${product.description}</span>
+      <span class="item_price">$${product.price}</span>
+      <button class="snipcart-add-item"
+        data-item-id="${product.id}"
+        data-item-price="${product.price}"
+        data-item-url="${product.url}"
+        data-item-description="${product.description}"
+        data-item-name="${product.name}">
+        Add to Cart
+      </button>
+    `;
+    gallery.appendChild(div);
+  });
+
+  setupImageClicks();
+  renderPagination(filtered.length, page);
+}
+
+function renderPagination(totalItems, currentPage) {
+  pagination.innerHTML = '';
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement('button');
+    btn.textContent = i;
+    if (i === currentPage) btn.classList.add('active');
+    btn.onclick = () => updatePage(i);
+    pagination.appendChild(btn);
+  }
+}
+
+function filterProducts() {
+  const query = searchInput.value.toLowerCase();
+  return allProducts.filter(product => product.name.toLowerCase().includes(query));
+}
+
+searchInput.addEventListener('input', () => updatePage(1));
+
+gallery.addEventListener('click', (e) => {
+  if (e.target.tagName === 'IMG') {
+    const items = Array.from(gallery.querySelectorAll('.item'));
+    const index = items.findIndex(item => item.contains(e.target));
+    openModal(index);
+  }
+});
+
+document.getElementById('modal-close').onclick = () => document.getElementById('modal').style.display = 'none';
+window.onclick = e => { if (e.target.id === 'modal') document.getElementById('modal').style.display = 'none'; };
+document.getElementById('prev-slide').onclick = () => openModal((currentSlideIndex - 1 + filterProducts().length) % filterProducts().length);
+document.getElementById('next-slide').onclick = () => openModal((currentSlideIndex + 1) % filterProducts().length);
+
+function openModal(index) {
+  const filtered = filterProducts();
+  const product = filtered[index];
+  if (!product) return;
+
+  document.getElementById('modal-img').src = product.image;
+  document.getElementById('modal-info').innerHTML = `
+    <strong>${product.name}</strong><br>
+    ${product.description}<br>
+    <em>$${product.price}</em>
+  `;
+  const modalBuy = document.getElementById('modal-buy');
+  modalBuy.setAttribute('data-item-id', product.id);
+  modalBuy.setAttribute('data-item-price', product.price);
+  modalBuy.setAttribute('data-item-url', product.url);
+  modalBuy.setAttribute('data-item-description', product.description);
+  modalBuy.setAttribute('data-item-name', product.name);
+
+  document.getElementById('modal').style.display = 'flex';
+  currentSlideIndex = allProducts.findIndex(p => p.id === product.id);
+}
+
+fetch('products.json')
+  .then(response => response.json())
+  .then(data => {
+    window.allProductsMaster = data;
+    renderProducts(data);
+  });
+</script>
+
 <div hidden id="snipcart"
   data-api-key="MzYxZGNmYWItNzQxMi00NmYyLWJmMTEtOGFmOGI4M2E2YWY0NjM4ODU4Mjk4OTA5OTQ5ODMy"
   data-config-add-billing-address-checkbox="true"
@@ -206,108 +182,5 @@
   data-config-shipping-sync-billing="true">
 </div>
 
-<script>
-  let allProducts = [];
-  let currentSlideIndex = 0;
-  const gallery = document.getElementById('gallery');
-  const pagination = document.getElementById('pagination');
-  const searchInput = document.getElementById('search-input');
-  const itemsPerPage = 12;
-
-  function renderProducts(products) {
-    allProducts = products;
-    updatePage(1);
-  }
-
-  function updatePage(page) {
-    gallery.innerHTML = '';
-    const filtered = filterProducts();
-    const start = (page - 1) * itemsPerPage;
-    const paginated = filtered.slice(start, start + itemsPerPage);
-
-    paginated.forEach(product => {
-      const div = document.createElement('div');
-      div.className = 'item';
-      div.innerHTML = 
-        <img src="${product.image}" alt="${product.name}">
-        <span class="item_name">${product.name}</span>
-        <span class="item_description">${product.description}</span>
-        <span class="item_price">$${product.price}</span>
-        <button class="snipcart-add-item"
-          data-item-id="${product.id}"
-          data-item-price="${product.price}"
-          data-item-url="${product.url}"
-          data-item-description="${product.description}"
-          data-item-name="${product.name}">
-          Add to Cart
-        </button>
-      ;
-      gallery.appendChild(div);
-    });
-
-    setupImageClicks();
-    renderPagination(filtered.length, page);
-  }
-
-  function renderPagination(totalItems, currentPage) {
-    pagination.innerHTML = '';
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-    for (let i = 1; i <= totalPages; i++) {
-      const btn = document.createElement('button');
-      btn.textContent = i;
-      if (i === currentPage) btn.classList.add('active');
-      btn.onclick = () => updatePage(i);
-      pagination.appendChild(btn);
-    }
-  }
-
-  function filterProducts() {
-    const query = searchInput.value.toLowerCase();
-    return allProducts.filter(product => product.name.toLowerCase().includes(query));
-  }
-
-  searchInput.addEventListener('input', () => updatePage(1));
-
-  function setupImageClicks() {
-    const items = Array.from(document.querySelectorAll('.item'));
-    items.forEach((item, index) => {
-      item.querySelector('img').onclick = () => openModal(index);
-    });
-  }
-
-  function openModal(index) {
-    const filtered = filterProducts();
-    const product = filtered[index];
-    if (!product) return;
-
-    document.getElementById('modal-img').src = product.image;
-    document.getElementById('modal-info').innerHTML = 
-      <strong>${product.name}</strong><br>
-      ${product.description}<br>
-      <em>$${product.price}</em>
-    ;
-    const modalBuy = document.getElementById('modal-buy');
-    modalBuy.setAttribute('data-item-id', product.id);
-    modalBuy.setAttribute('data-item-price', product.price);
-    modalBuy.setAttribute('data-item-url', product.url);
-    modalBuy.setAttribute('data-item-description', product.description);
-    modalBuy.setAttribute('data-item-name', product.name);
-
-    document.getElementById('modal').style.display = 'flex';
-    currentSlideIndex = allProducts.findIndex(p => p.id === product.id);
-  }
-
-  document.getElementById('modal-close').onclick = () => document.getElementById('modal').style.display = 'none';
-  window.onclick = e => { if (e.target.id === 'modal') document.getElementById('modal').style.display = 'none'; };
-  document.getElementById('prev-slide').onclick = () => openModal((currentSlideIndex - 1 + filterProducts().length) % filterProducts().length);
-  document.getElementById('next-slide').onclick = () => openModal((currentSlideIndex + 1) % filterProducts().length);
-
-  fetch('products.json')
-    .then(response => response.json())
-    .then(data => {
-      window.allProductsMaster = data;
-      renderProducts(data);
-    });
-</script>
 </body>
 </html>
