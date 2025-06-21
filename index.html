@@ -406,11 +406,11 @@
     { id: 13, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
     // Add more products as needed
   ];
-
 let currentPage = 1;
 const itemsPerPage = 12;
 let activeCategory = '';  // No active category initially
 let filteredProducts = [...allProducts]; // Start with all products
+let currentIndex = 0;
 
 function goToPage(page) {
   currentPage = page;
@@ -438,6 +438,7 @@ function renderPage() {
 
 function openModal(index) {
   const product = filteredProducts[index];
+  currentIndex = index;
   document.getElementById('modal-img').src = product.image;
   document.getElementById('modal-description').textContent = `${product.name}: ${product.description}`;
   document.getElementById('modal').style.display = 'flex';
@@ -448,17 +449,15 @@ function closeModal() {
 }
 
 function prevSlide() {
-  const currentIndex = filteredProducts.indexOf(product);
-  const nextIndex = (currentIndex - 1 + filteredProducts.length) % filteredProducts.length;
-  const product = filteredProducts[nextIndex];
+  currentIndex = (currentIndex - 1 + filteredProducts.length) % filteredProducts.length;
+  const product = filteredProducts[currentIndex];
   document.getElementById('modal-img').src = product.image;
   document.getElementById('modal-description').textContent = `${product.name}: ${product.description}`;
 }
 
 function nextSlide() {
-  const currentIndex = filteredProducts.indexOf(product);
-  const nextIndex = (currentIndex + 1) % filteredProducts.length;
-  const product = filteredProducts[nextIndex];
+  currentIndex = (currentIndex + 1) % filteredProducts.length;
+  const product = filteredProducts[currentIndex];
   document.getElementById('modal-img').src = product.image;
   document.getElementById('modal-description').textContent = `${product.name}: ${product.description}`;
 }
@@ -466,33 +465,33 @@ function nextSlide() {
 function filterProducts(category = '', button = null) {
   const searchTerm = document.getElementById('search-input').value.toLowerCase();
 
-  // If category is not selected, show all products
-  if (category === '') {
-    activeCategory = '';  // No active category
+  // Toggle the active category
+  if (category === activeCategory) {
+    activeCategory = '';  // Deselect category, show all products
+    if (button) {
+      button.classList.remove('active-category'); // Remove active class from button
+    }
   } else {
-    activeCategory = category;
+    activeCategory = category; // Set the active category
+    const buttons = document.querySelectorAll('.category-button');
+    buttons.forEach(btn => btn.classList.remove('active-category')); // Remove active class from all buttons
+    if (button) {
+      button.classList.add('active-category'); // Add active class to clicked button
+    }
   }
 
-  // Apply search term and category filter
-  filteredProducts = allProducts.filter(product => {
-    const matchesCategory = activeCategory === '' || product.category === activeCategory;
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm);
-    return matchesCategory && matchesSearch;
-  });
-
-  // Update the UI for category buttons
-  const buttons = document.querySelectorAll('.category-button');
-  buttons.forEach(btn => btn.classList.remove('active-category')); // Remove active class from all buttons
-  if (button) {
-    button.classList.add('active-category');  // Add active class to clicked button
-  }
+  // Filter products by category and search term
+  filteredProducts = allProducts.filter(product => 
+    product.name.toLowerCase().includes(searchTerm) && 
+    (activeCategory === '' || product.category === activeCategory)
+  );
 
   renderPage();
 }
 
 // Search bar event listener
 document.getElementById('search-input').addEventListener('input', () => {
-  filterProducts(activeCategory); // Only apply search filter along with active category
+  filterProducts(activeCategory); // Keep active category, just filter by search term
 });
 
 // Category button click handler
