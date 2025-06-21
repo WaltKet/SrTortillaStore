@@ -131,16 +131,15 @@
 <!-- Category Filter -->
 <div id="categories-bar" style="text-align:center; padding: 15px;">
   <span id="category-buttons">
-    <!-- Static Category Buttons with Click Event for Toggling Active Class -->
-    <button class="category-button" onclick="filterProducts('Art', this)">Art</button>
-    <button class="category-button" onclick="filterProducts('Sculptures', this)">Sculptures</button>
-    <button class="category-button" onclick="filterProducts('Paintings', this)">Paintings</button>
+    <button class="category-button" onclick="handleCategoryClick('Art', this)">Art</button>
+    <button class="category-button" onclick="handleCategoryClick('Sculptures', this)">Sculptures</button>
+    <button class="category-button" onclick="handleCategoryClick('Paintings', this)">Paintings</button>
   </span>
 </div>
 
 <!-- Search Bar -->
 <div id="search-bar">
-  <input type="text" id="search-input" placeholder="Search for artwork by name..." oninput="filterProducts()">
+  <input type="text" id="search-input" placeholder="Search for artwork by name..." oninput="filterProducts(activeCategory, null)">
 </div>
 
  <!-- Gallery -->
