@@ -480,9 +480,15 @@ let currentPage = 1;
 const itemsPerPage = 12;
 let activeCategory = '';  // No active category initially
 let filteredProducts = [...allProducts]; // Start with all products
-let currentIndex = 0; // Track the current product index for the modal
+let currentIndex = 0; // Track current product index for slideshow
 
-// Render page with products
+// Function to navigate to a specific page in pagination
+function goToPage(page) {
+  currentPage = page;
+  renderPage();
+}
+
+// Render the products for the current page
 function renderPage() {
   const gallery = document.getElementById('gallery');
   gallery.innerHTML = '';
@@ -500,6 +506,23 @@ function renderPage() {
     `;
     gallery.appendChild(div);
   });
+
+  renderPagination();
+}
+
+// Render the pagination buttons
+function renderPagination() {
+  const pagination = document.getElementById('pagination');
+  pagination.innerHTML = '';
+
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  
+  for (let i = 1; i <= totalPages; i++) {
+    const button = document.createElement('button');
+    button.textContent = i;
+    button.onclick = () => goToPage(i);
+    pagination.appendChild(button);
+  }
 }
 
 // Open the modal and display the product details
@@ -552,13 +575,6 @@ function filterProducts(category = '', button = null) {
     product.name.toLowerCase().includes(searchTerm) && 
     (activeCategory === '' || product.category === activeCategory)
   );
-
-  // Update the UI for category buttons
-  const buttons = document.querySelectorAll('.category-button');
-  buttons.forEach(btn => btn.classList.remove('active-category')); // Remove active class from all buttons
-  if (button) {
-    button.classList.add('active-category');  // Add active class to clicked button
-  }
 
   renderPage();
 }
