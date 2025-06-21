@@ -55,51 +55,41 @@
       gap: 20px;
       padding: 30px;
     }
-	.item {
-	  background: #222;
-	  padding: 15px;
-	  border-radius: 10px;
-	  box-shadow: 0 0 10px #333;
-	  display: flex;
-	  flex-direction: column;
-	  align-items: center;
-	  justify-content: space-between; /* This will ensure the elements are spaced out */
-	  height: 350px; /* Add height to ensure all content fits */
-	}
-
-	.item img {
-	  width: 100%;
-	  height: 200px;
-	  object-fit: cover;
-	  border-radius: 8px;
-	  cursor: pointer;
-	}
-
-	.item_name, .item_price {
-	  margin: 5px 0;
-	  text-align: center;
-	}
+    .item {
+      background: #222;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+      cursor: pointer;
+    }
     .item span {
       display: block;
       margin: 5px 0;
     }
-	.snipcart-add-item {
-	  background: #ff3c38; /* Red background */
-	  color: white;
-	  padding: 8px 15px;
-	  border: none;
-	  border-radius: 5px;
-	  margin-top: 10px; /* Add space between price and button */
-	  cursor: pointer;
-	  font-weight: bold;
-	  text-decoration: none;
-	  text-align: center;
-	  display: inline-block; /* Ensure it’s treated as a block element */
-	}
-
-	.snipcart-add-item:hover {
-	  background: #e52b27; /* Darker red on hover */
-	}
+    .snipcart-add-item {
+      background: #ff3c38;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      margin: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: none;
+      text-align: center;
+    }
+    .snipcart-add-item:hover {
+      background: #e52b27;
+    }
     .pagination {
       text-align: center;
       padding-bottom: 30px;
@@ -128,75 +118,7 @@
     .category-button.active-category {
       background-color: #ff3c38;
     }
-	/* Ensure the modal is displayed on top */
-	.modal {
-	  display: none; /* Initially hidden */
-	  position: fixed; /* Fixed position to stay on top of everything */
-	  top: 0;
-	  left: 0;
-	  width: 100vw;
-	  height: 100vh;
-	  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
-	  z-index: 1000; /* Make sure the modal is on top */
-	  justify-content: center;
-	  align-items: center;
-	  flex-direction: column;
-	}
 
-	/* Modal Content (Image and Description) */
-	.modal-content {
-	  display: flex;
-	  flex-direction: column;
-	  align-items: center;
-	  color: white;
-	  text-align: center;
-	  padding: 20px;
-	  border-radius: 10px;
-	  background: #222;
-	  position: relative;
-	}
-
-	/* Image within the modal */
-	.modal img {
-	  max-width: 90vw;
-	  max-height: 80vh;
-	  border-radius: 10px;
-	}
-
-	/* Description text */
-	.modal-description {
-	  margin-top: 10px;
-	}
-
-	/* Modal Navigation buttons */
-	.modal-nav {
-	  margin-top: 20px;
-	  display: flex;
-	  justify-content: space-between;
-	  width: 100%;
-	}
-
-	.modal-nav button {
-	  background-color: #333;
-	  color: white;
-	  padding: 10px;
-	  border: none;
-	  cursor: pointer;
-	}
-
-	.modal-nav button:hover {
-	  background-color: #ff3c38;
-	}
-
-	/* Close button */
-	#modal-close {
-	  position: absolute;
-	  top: 10px;
-	  right: 10px;
-	  font-size: 24px;
-	  color: white;
-	  cursor: pointer;
-	}
   </style>
 </head>
 <body>
@@ -490,15 +412,9 @@ let currentPage = 1;
 const itemsPerPage = 12;
 let activeCategory = '';  // No active category initially
 let filteredProducts = [...allProducts]; // Start with all products
-let currentIndex = 0; // Track current product index for slideshow
+let currentIndex = 0; // Track the current product index for the modal
 
-// Function to navigate to a specific page in pagination
-function goToPage(page) {
-  currentPage = page;
-  renderPage();
-}
-
-// Render the products for the current page
+// Render page with products
 function renderPage() {
   const gallery = document.getElementById('gallery');
   gallery.innerHTML = '';
@@ -516,23 +432,6 @@ function renderPage() {
     `;
     gallery.appendChild(div);
   });
-
-  renderPagination();
-}
-
-// Render the pagination buttons
-function renderPagination() {
-  const pagination = document.getElementById('pagination');
-  pagination.innerHTML = '';
-
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-  
-  for (let i = 1; i <= totalPages; i++) {
-    const button = document.createElement('button');
-    button.textContent = i;
-    button.onclick = () => goToPage(i);
-    pagination.appendChild(button);
-  }
 }
 
 // Open the modal and display the product details
@@ -585,6 +484,13 @@ function filterProducts(category = '', button = null) {
     product.name.toLowerCase().includes(searchTerm) && 
     (activeCategory === '' || product.category === activeCategory)
   );
+
+  // Update the UI for category buttons
+  const buttons = document.querySelectorAll('.category-button');
+  buttons.forEach(btn => btn.classList.remove('active-category')); // Remove active class from all buttons
+  if (button) {
+    button.classList.add('active-category');  // Add active class to clicked button
+  }
 
   renderPage();
 }
