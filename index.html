@@ -344,9 +344,16 @@
 <!-- Modal for Slideshow -->
 <div class="modal" id="modal" style="display:none;">
   <div class="modal-content">
-    <img id="modal-img" src="" alt="Product Image">
-    <span id="modal-description"></span>
+    <!-- This is the image that will change when navigating through the modal -->
+    <img id="modal-img" src="" alt="Product Image" style="max-width:90vw; max-height:80vh; border-radius:10px;">
+    
+    <!-- Product description text -->
+    <span id="modal-description" style="color:white; text-align:center; margin:10px;"></span>
+    
+    <!-- Close button -->
     <button id="modal-close" onclick="closeModal()">Close</button>
+    
+    <!-- Navigation buttons -->
     <div class="modal-nav">
       <button id="prev-slide" onclick="prevSlide()">Previous</button>
       <button id="next-slide" onclick="nextSlide()">Next</button>
@@ -400,7 +407,6 @@
     { id: 13, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
     // Add more products as needed
   ];
-
 let currentPage = 1;
 const itemsPerPage = 12;
 let activeCategory = '';  // No active category initially
@@ -432,15 +438,29 @@ function renderPage() {
 }
 
 function openModal(index) {
+  // Ensure modal elements exist
+  const modal = document.getElementById('modal');
+  const modalImg = document.getElementById('modal-img');
+  const modalDescription = document.getElementById('modal-description');
+
+  if (!modal || !modalImg || !modalDescription) {
+    console.error("Modal elements are missing");
+    return;
+  }
+
+  // Set the current index and update the modal with the product info
   const product = filteredProducts[index];
   currentIndex = index;
-  document.getElementById('modal-img').src = product.image;
-  document.getElementById('modal-description').textContent = `${product.name}: ${product.description}`;
-  document.getElementById('modal').style.display = 'flex';
+
+  modalImg.src = product.image;
+  modalDescription.textContent = `${product.name}: ${product.description}`;
+
+  modal.style.display = 'flex'; // Show the modal
 }
 
 function closeModal() {
-  document.getElementById('modal').style.display = 'none';
+  const modal = document.getElementById('modal');
+  modal.style.display = 'none'; // Hide the modal
 }
 
 function prevSlide() {
@@ -460,7 +480,7 @@ function nextSlide() {
 function filterProducts(category = '', button = null) {
   const searchTerm = document.getElementById('search-input').value.toLowerCase();
   
-  // Search filter if there is a search term in the input
+  // Filter products based on search term and category
   filteredProducts = allProducts.filter(product => 
     product.name.toLowerCase().includes(searchTerm) && 
     (category === '' || product.category === category)
@@ -482,6 +502,10 @@ function filterProducts(category = '', button = null) {
   }
 
   renderPage();
+}
+
+// Initial Page Render
+renderPage();
 }
 
 // Initial Page Render
