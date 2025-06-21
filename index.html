@@ -340,6 +340,10 @@
     </button>
   </div>
 
+  <!-- More products as needed -->
+</section>
+
+
 <!-- Modal for Slideshow -->
 <div class="modal" id="modal" style="display:none;">
   <div class="modal-content">
@@ -359,9 +363,6 @@
     </div>
   </div>
 </div>
-
-  <!-- More products as needed -->
-</section>
 
 <!-- Pagination -->
 <div class="pagination" id="pagination">
@@ -410,13 +411,9 @@ let currentPage = 1;
 const itemsPerPage = 12;
 let activeCategory = '';  // No active category initially
 let filteredProducts = [...allProducts]; // Start with all products
-let currentIndex = 0;
+let currentIndex = 0; // Track the current product index for the modal
 
-function goToPage(page) {
-  currentPage = page;
-  renderPage();
-}
-
+// Render page with products
 function renderPage() {
   const gallery = document.getElementById('gallery');
   gallery.innerHTML = '';
@@ -436,62 +433,70 @@ function renderPage() {
   });
 }
 
+// Open the modal and display the product details
 function openModal(index) {
-  const product = filteredProducts[index];
   currentIndex = index;
+  const product = filteredProducts[currentIndex];
+
+  // Update the modal with the selected product's information
   document.getElementById('modal-img').src = product.image;
   document.getElementById('modal-description').textContent = `${product.name}: ${product.description}`;
-  document.getElementById('modal').style.display = 'flex';
+  document.getElementById('modal').style.display = 'flex'; // Show the modal
 }
 
+// Close the modal
 function closeModal() {
-  document.getElementById('modal').style.display = 'none';
+  document.getElementById('modal').style.display = 'none'; // Hide the modal
 }
 
+// Go to the previous product in the filtered list
 function prevSlide() {
   currentIndex = (currentIndex - 1 + filteredProducts.length) % filteredProducts.length;
   const product = filteredProducts[currentIndex];
+
   document.getElementById('modal-img').src = product.image;
   document.getElementById('modal-description').textContent = `${product.name}: ${product.description}`;
 }
 
+// Go to the next product in the filtered list
 function nextSlide() {
   currentIndex = (currentIndex + 1) % filteredProducts.length;
   const product = filteredProducts[currentIndex];
+
   document.getElementById('modal-img').src = product.image;
   document.getElementById('modal-description').textContent = `${product.name}: ${product.description}`;
 }
 
+// Filter products by category and search
 function filterProducts(category = '', button = null) {
   const searchTerm = document.getElementById('search-input').value.toLowerCase();
 
-  // Toggle the active category
-  if (category === activeCategory) {
-    activeCategory = '';  // Deselect category, show all products
-    if (button) {
-      button.classList.remove('active-category'); // Remove active class from button
-    }
+  // If category is not selected, reset to show all products
+  if (category === '') {
+    activeCategory = '';  // No active category
   } else {
-    activeCategory = category; // Set the active category
-    const buttons = document.querySelectorAll('.category-button');
-    buttons.forEach(btn => btn.classList.remove('active-category')); // Remove active class from all buttons
-    if (button) {
-      button.classList.add('active-category'); // Add active class to clicked button
-    }
+    activeCategory = category;
   }
 
-  // Filter products by category and search term
+  // Apply search term and category filter
   filteredProducts = allProducts.filter(product => 
     product.name.toLowerCase().includes(searchTerm) && 
     (activeCategory === '' || product.category === activeCategory)
   );
+
+  // Update the UI for category buttons
+  const buttons = document.querySelectorAll('.category-button');
+  buttons.forEach(btn => btn.classList.remove('active-category')); // Remove active class from all buttons
+  if (button) {
+    button.classList.add('active-category');  // Add active class to clicked button
+  }
 
   renderPage();
 }
 
 // Search bar event listener
 document.getElementById('search-input').addEventListener('input', () => {
-  filterProducts(activeCategory); // Keep active category, just filter by search term
+  filterProducts(activeCategory); // Only apply search filter along with active category
 });
 
 // Category button click handler
