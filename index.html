@@ -407,6 +407,7 @@
     { id: 13, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
     // Add more products as needed
   ];
+
 let currentPage = 1;
 const itemsPerPage = 12;
 let activeCategory = '';  // No active category initially
@@ -438,29 +439,15 @@ function renderPage() {
 }
 
 function openModal(index) {
-  // Ensure modal elements exist
-  const modal = document.getElementById('modal');
-  const modalImg = document.getElementById('modal-img');
-  const modalDescription = document.getElementById('modal-description');
-
-  if (!modal || !modalImg || !modalDescription) {
-    console.error("Modal elements are missing");
-    return;
-  }
-
-  // Set the current index and update the modal with the product info
   const product = filteredProducts[index];
   currentIndex = index;
-
-  modalImg.src = product.image;
-  modalDescription.textContent = `${product.name}: ${product.description}`;
-
-  modal.style.display = 'flex'; // Show the modal
+  document.getElementById('modal-img').src = product.image;
+  document.getElementById('modal-description').textContent = `${product.name}: ${product.description}`;
+  document.getElementById('modal').style.display = 'flex';
 }
 
 function closeModal() {
-  const modal = document.getElementById('modal');
-  modal.style.display = 'none'; // Hide the modal
+  document.getElementById('modal').style.display = 'none';
 }
 
 function prevSlide() {
@@ -479,33 +466,38 @@ function nextSlide() {
 
 function filterProducts(category = '', button = null) {
   const searchTerm = document.getElementById('search-input').value.toLowerCase();
-  
-  // Filter products based on search term and category
-  filteredProducts = allProducts.filter(product => 
-    product.name.toLowerCase().includes(searchTerm) && 
-    (category === '' || product.category === category)
-  );
 
-  // Toggle the active category
-  if (category === activeCategory) {
-    activeCategory = '';  // Deselect the category
-    if (button) {
-      button.classList.remove('active-category');
-    }
+  // If no category is selected, reset to show all products
+  if (category === '') {
+    activeCategory = ''; // No active category
   } else {
     activeCategory = category;
-    const buttons = document.querySelectorAll('.category-button');
-    buttons.forEach(btn => btn.classList.remove('active-category')); // Remove active class from all buttons
-    if (button) {
-      button.classList.add('active-category');  // Add active class to clicked button
-    }
+  }
+
+  // Apply search term and category filter
+  filteredProducts = allProducts.filter(product => 
+    product.name.toLowerCase().includes(searchTerm) && 
+    (activeCategory === '' || product.category === activeCategory)
+  );
+
+  // Update the UI for category buttons
+  const buttons = document.querySelectorAll('.category-button');
+  buttons.forEach(btn => btn.classList.remove('active-category')); // Remove active class from all buttons
+  if (button) {
+    button.classList.add('active-category');  // Add active class to clicked button
   }
 
   renderPage();
 }
 
-// Initial Page Render
-renderPage();
+// Search bar event listener
+document.getElementById('search-input').addEventListener('input', () => {
+  filterProducts(activeCategory, null); // Keep active category, just filter by search term
+});
+
+// Category button click handler
+function handleCategoryClick(category, button) {
+  filterProducts(category, button);
 }
 
 // Initial Page Render
