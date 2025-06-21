@@ -139,7 +139,7 @@
 
 <!-- Search Bar -->
 <div id="search-bar">
-  <input type="text" id="search-input" placeholder="Search for artwork by name..." oninput="filterProducts(activeCategory, null)">
+  <input type="text" id="search-input" placeholder="Search for artwork by name..." oninput="filterProducts(activeCategory)">
 </div>
 
  <!-- Gallery -->
@@ -411,7 +411,6 @@ let currentPage = 1;
 const itemsPerPage = 12;
 let activeCategory = '';  // No active category initially
 let filteredProducts = [...allProducts]; // Start with all products
-let currentIndex = 0;
 
 function goToPage(page) {
   currentPage = page;
@@ -439,7 +438,6 @@ function renderPage() {
 
 function openModal(index) {
   const product = filteredProducts[index];
-  currentIndex = index;
   document.getElementById('modal-img').src = product.image;
   document.getElementById('modal-description').textContent = `${product.name}: ${product.description}`;
   document.getElementById('modal').style.display = 'flex';
@@ -450,15 +448,17 @@ function closeModal() {
 }
 
 function prevSlide() {
-  currentIndex = (currentIndex - 1 + filteredProducts.length) % filteredProducts.length;
-  const product = filteredProducts[currentIndex];
+  const currentIndex = filteredProducts.indexOf(product);
+  const nextIndex = (currentIndex - 1 + filteredProducts.length) % filteredProducts.length;
+  const product = filteredProducts[nextIndex];
   document.getElementById('modal-img').src = product.image;
   document.getElementById('modal-description').textContent = `${product.name}: ${product.description}`;
 }
 
 function nextSlide() {
-  currentIndex = (currentIndex + 1) % filteredProducts.length;
-  const product = filteredProducts[currentIndex];
+  const currentIndex = filteredProducts.indexOf(product);
+  const nextIndex = (currentIndex + 1) % filteredProducts.length;
+  const product = filteredProducts[nextIndex];
   document.getElementById('modal-img').src = product.image;
   document.getElementById('modal-description').textContent = `${product.name}: ${product.description}`;
 }
@@ -466,18 +466,19 @@ function nextSlide() {
 function filterProducts(category = '', button = null) {
   const searchTerm = document.getElementById('search-input').value.toLowerCase();
 
-  // If no category is selected, reset to show all products
+  // If category is not selected, show all products
   if (category === '') {
-    activeCategory = ''; // No active category
+    activeCategory = '';  // No active category
   } else {
     activeCategory = category;
   }
 
   // Apply search term and category filter
-  filteredProducts = allProducts.filter(product => 
-    product.name.toLowerCase().includes(searchTerm) && 
-    (activeCategory === '' || product.category === activeCategory)
-  );
+  filteredProducts = allProducts.filter(product => {
+    const matchesCategory = activeCategory === '' || product.category === activeCategory;
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm);
+    return matchesCategory && matchesSearch;
+  });
 
   // Update the UI for category buttons
   const buttons = document.querySelectorAll('.category-button');
@@ -491,12 +492,12 @@ function filterProducts(category = '', button = null) {
 
 // Search bar event listener
 document.getElementById('search-input').addEventListener('input', () => {
-  filterProducts(activeCategory, null); // Keep active category, just filter by search term
+  filterProducts(activeCategory); // Only apply search filter along with active category
 });
 
 // Category button click handler
 function handleCategoryClick(category, button) {
-  filterProducts(category, button);
+  filterProducts(category, button); // Apply both category and search filters
 }
 
 // Initial Page Render
