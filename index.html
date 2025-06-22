@@ -506,13 +506,6 @@ function filterProducts(category = '', button = null) {
     (activeCategory === '' || product.category === activeCategory)
   );
 
-  // Update the UI for category buttons
-  const buttons = document.querySelectorAll('.category-button');
-  buttons.forEach(btn => btn.classList.remove('active-category')); // Remove active class from all buttons
-  if (button) {
-    button.classList.add('active-category');  // Add active class to clicked button
-  }
-
   renderPage();
 }
 
