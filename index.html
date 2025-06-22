@@ -434,6 +434,27 @@ function renderPage() {
   });
 }
 
+// Render the pagination buttons
+function renderPagination() {
+  const pagination = document.getElementById('pagination');
+  pagination.innerHTML = '';
+
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
+  for (let i = 1; i <= totalPages; i++) {
+    const button = document.createElement('button');
+    button.textContent = i;
+    button.onclick = () => goToPage(i);
+    pagination.appendChild(button);
+  }
+}
+
+// Go to the page
+function goToPage(page) {
+  currentPage = page;
+  renderPage(); // Re-render the gallery
+}
+
 // Open the modal and display the product details
 function openModal(index) {
   currentIndex = index;
