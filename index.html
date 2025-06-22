@@ -200,6 +200,23 @@
 	#prev-slide:hover, #next-slide:hover {
 	  background-color: #e52b27;
 	}
+	/* Modal button to match the product "Add to Cart" button */
+	#modal-buy {
+	  background: #ff3c38;
+	  color: white;
+	  padding: 12px 20px;
+	  border: none;
+	  border-radius: 5px;
+	  margin-top: 10px;
+	  cursor: pointer;
+	  font-weight: bold;
+	  text-align: center;
+	  z-index: 10; /* Ensure the button is above other content */
+	}
+
+	#modal-buy:hover {
+	  background: #e52b27;
+	}
 
   </style>
 </head>
@@ -229,6 +246,8 @@
 
  <!-- Gallery -->
 <section class="gallery" id="gallery">
+  <!-- NEED TO ADD ITEMS HERE FOR SNIPCART TO FIND THEM!!! -->
+
   <!-- Static Product Items -->
   <div class="item" data-category="Art">
     <img src="SHrekMusical.jpg" alt="Product 1">
@@ -346,6 +365,20 @@
     { id: 11, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
     { id: 12, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
     { id: 13, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
+	{ id: 14, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
+    { id: 15, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
+    { id: 16, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
+    { id: 17, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
+    { id: 18, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
+    { id: 19, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
+    { id: 20, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
+    { id: 21, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
+    { id: 22, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
+    { id: 23, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
+    { id: 24, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
+    { id: 25, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
+    { id: 26, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
+
     // Add more products as needed
   ];
 
@@ -355,32 +388,75 @@
   let filteredProducts = [...allProducts]; // Start with all products
   let currentIndex = 0; // Track the current product index for the modal
 
-  function renderPage() {
-    const gallery = document.getElementById('gallery');
-    gallery.innerHTML = '';
-    const start = (currentPage - 1) * itemsPerPage;
+// Render page with products
+function renderPage() {
+  const gallery = document.getElementById('gallery');
+  gallery.innerHTML = '';  // Clear the existing gallery
 
-    const paginatedProducts = filteredProducts.slice(start, start + itemsPerPage);
+  const start = (currentPage - 1) * itemsPerPage;
+  const paginatedProducts = filteredProducts.slice(start, start + itemsPerPage);
 
-    paginatedProducts.forEach((product, index) => {
-      const div = document.createElement('div');
-      div.className = 'item';
-      div.innerHTML = `
-        <img src="${product.image}" alt="${product.name}" onclick="openModal(${index})">
-        <span class="item_name">${product.name}</span>
-        <span class="item_price">$${product.price}</span>
-        <button class="snipcart-add-item"
-          data-item-id="${product.id}"
-          data-item-price="${product.price}"
-          data-item-url="/${product.name.toLowerCase().replace(' ', '-')}"
-          data-item-description="${product.description}"
-          data-item-name="${product.name}">
-          Add to Cart
-        </button>
-      `;
-      gallery.appendChild(div);
-    });
+  // Create product items for the gallery
+  paginatedProducts.forEach((product, index) => {
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <img src="${product.image}" alt="${product.name}" onclick="openModal(${index})">
+      <span class="item_name">${product.name}</span>
+      <span class="item_price">$${product.price}</span>
+      <button class="snipcart-add-item"
+        data-item-id="${product.id}"
+        data-item-price="${product.price}"
+        data-item-url="/${product.name.toLowerCase().replace(' ', '-')}"
+        data-item-description="${product.description}"
+        data-item-name="${product.name}">
+        Add to Cart
+      </button>
+    `;
+    gallery.appendChild(div);
+  });
+
+  // Update the pagination buttons based on the filtered products
+  renderPagination();
+}
+
+// Render the pagination buttons dynamically
+function renderPagination() {
+  const pagination = document.getElementById('pagination');
+  pagination.innerHTML = '';  // Clear existing pagination
+
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);  // Total pages based on the number of products
+
+  // Prevent rendering pagination if no products exist
+  if (totalPages === 0) {
+    pagination.innerHTML = 'No products available';
+    return;
   }
+
+  // Create page buttons dynamically
+  for (let i = 1; i <= totalPages; i++) {
+    const button = document.createElement('button');
+    button.textContent = i;
+    button.onclick = () => goToPage(i);  // Bind click event to each page
+    if (i === currentPage) {
+      button.classList.add('active');  // Highlight the active page
+    }
+    pagination.appendChild(button);
+  }
+
+  // Disable 'Next' and 'Previous' buttons based on current page
+  document.getElementById('prev-slide').disabled = currentPage === 1;
+  document.getElementById('next-slide').disabled = currentPage === totalPages;
+}
+// Go to the specified page
+function goToPage(page) {
+  if (page < 1 || page > Math.ceil(filteredProducts.length / itemsPerPage)) {
+    return;  // Prevent going out of bounds
+  }
+  currentPage = page;
+  renderPage();  // Re-render the gallery with the new page
+}
+
 
   function openModal(index) {
     const product = filteredProducts[index];
@@ -430,28 +506,31 @@
       url: productUrl,
       description: productDescription
     });
+	  closeModal();
   });
 
-  function filterProducts(category = '', button = null) {
-    const searchTerm = document.getElementById('search-input').value.toLowerCase();
+// Filter products by category and search term
+function filterProducts(category = '', button = null) {
+  const searchTerm = document.getElementById('search-input').value.toLowerCase();
 
-    if (category === '') {
-      activeCategory = '';  // No active category
-    } else {
-      activeCategory = category;
-    }
-
-    filteredProducts = allProducts.filter(product =>
-      product.name.toLowerCase().includes(searchTerm) &&
-      (activeCategory === '' || product.category === activeCategory)
-    );
-
-    renderPage();
+  // If category is not selected, reset to show all products
+  if (category === '') {
+    activeCategory = '';
+  } else {
+    activeCategory = category;
   }
 
-  document.getElementById('search-input').addEventListener('input', () => {
-    filterProducts(activeCategory);
-  });
+  // Apply search term and category filter
+  filteredProducts = allProducts.filter(product => 
+    product.name.toLowerCase().includes(searchTerm) && 
+    (activeCategory === '' || product.category === activeCategory)
+  );
+
+  // After filtering products, reset the current page to the first page
+  currentPage = 1;
+
+  renderPage();  // Re-render the page with filtered products
+}
 
   function handleCategoryClick(category, button) {
     if (activeCategory === category) {

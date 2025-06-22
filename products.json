@@ -1,9 +1,9 @@
 [
   {
     "id": "product-1",
+	"category": "Skyline",
     "name": "Artwork 1",
     "description": "Limited edition spray art #1",
-	"category": "Skyline",
     "price": "60.00",
     "image": "https://waltket.github.io/SrTortillaStore/DrivinManiaSplashScreen.png",
     "url": "https://waltket.github.io/SrTortillaStore/"
