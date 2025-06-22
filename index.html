@@ -523,10 +523,10 @@ document.getElementById('search-input').addEventListener('input', () => {
 
 // Category button click handler
 function handleCategoryClick(category, button) {
-  // If the clicked category is the active one, we deselect it
+  // If the clicked category is already active, deselect it
   if (activeCategory === category) {
     activeCategory = ''; // Deselect the category
-    button.classList.remove('active-category'); // Remove active class
+    button.classList.remove('active-category'); // Remove active class from the button
   } else {
     // Otherwise, we select the category
     activeCategory = category;
@@ -537,7 +537,7 @@ function handleCategoryClick(category, button) {
     button.classList.add('active-category');
   }
 
-  // Filter products based on the new active category
+  // Filter products based on the new active category and search input
   filterProducts(activeCategory, button);
 }
 // Initial Page Render
