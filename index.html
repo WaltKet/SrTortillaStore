@@ -51,10 +51,16 @@
     }
 	.gallery {
 	  display: grid;
-	  grid-template-columns: repeat(6, 1fr); /* Ensure 6 columns per row */
-	  gap: 20px;
-	  padding: 30px;
-	  overflow: visible;  /* Ensure no overflow hiding content */
+	  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+	  gap: 16px;
+	  padding: 10px;
+	}
+
+	/* Force 2 columns layout on smaller screens */
+	@media (max-width: 600px) {
+	  .gallery {
+		grid-template-columns: repeat(2, 1fr);
+	  }
 	}
 	.item {
 	  display: flex;
@@ -69,7 +75,7 @@
 	}
     .item img {
       width: 100%;
-      height: 200px;
+      height: auto;
       object-fit: cover;
       border-radius: 8px;
       cursor: pointer;
@@ -143,7 +149,7 @@
 	  position: relative;
 	  max-width: 90%; /* Limit the width */
 	  max-height: 80%; /* Limit the height */
-	  background-color: #fff;
+	  background-color: black;
 	  padding: 20px;
 	  border-radius: 10px;
 	  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
@@ -321,7 +327,10 @@
     
     <!-- Product description text -->
     <span id="modal-description" style="color:white; text-align:center; margin:10px;"></span>
-    
+	
+	<!-- Index like "Artwork 3 of 12" -->
+    <span id="modal-index" style="color:white; text-align:center; display:block; margin-top:5px;"></span>
+
     <!-- Close button -->
     <button id="modal-close" onclick="closeModal()">Close</button>
     
@@ -352,32 +361,32 @@
 <script>
  // Static Product Filtering by Category
   let allProducts = [
-    { id: 1, category: 'Art', name: 'Product 1', price: 19.99, image: 'SHrekMusical.jpg' },
-    { id: 2, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
-    { id: 3, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
-    { id: 4, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
-    { id: 5, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
-    { id: 6, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
-    { id: 7, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
-    { id: 8, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
-    { id: 9, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
-    { id: 10, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
-    { id: 11, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
-    { id: 12, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
-    { id: 13, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png' },
-	{ id: 14, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
-    { id: 15, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
-    { id: 16, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
-    { id: 17, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
-    { id: 18, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
-    { id: 19, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
-    { id: 20, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
-    { id: 21, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
-    { id: 22, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
-    { id: 23, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
-    { id: 24, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
-    { id: 25, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
-    { id: 26, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg' },
+    { id: 1, category: 'Art', name: 'Product 1', price: 19.99, image: 'SHrekMusical.jpg', description: 'A surreal, humorous reinterpretation of Broadway in gouache.'  },
+    { id: 2, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 3, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 4, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 5, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 6, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 7, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 8, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 9, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 10, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 11, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 12, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 13, category: 'Paintings', name: 'Product 3', price: 39.99, image: 'DrivinManiaSplashScreen.png', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+	{ id: 14, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 15, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 16, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 17, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 18, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 19, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 20, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 21, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 22, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 23, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 24, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 25, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg', description: 'A surreal, humorous reinterpretation of Broadway in gouache.' },
+    { id: 26, category: 'Sculptures', name: 'Product 2', price: 29.99, image: 'SHrekMusical.jpg',  },
 
     // Add more products as needed
   ];
@@ -401,7 +410,7 @@ function renderPage() {
     const div = document.createElement('div');
     div.className = 'item';
     div.innerHTML = `
-      <img src="${product.image}" alt="${product.name}" onclick="openModal(${index})">
+      <img src="${product.image}" alt="${product.name}" onclick="openModal(${start + index})">
       <span class="item_name">${product.name}</span>
       <span class="item_price">$${product.price}</span>
       <button class="snipcart-add-item"
@@ -443,10 +452,6 @@ function renderPagination() {
     }
     pagination.appendChild(button);
   }
-
-  // Disable 'Next' and 'Previous' buttons based on current page
-  document.getElementById('prev-slide').disabled = currentPage === 1;
-  document.getElementById('next-slide').disabled = currentPage === totalPages;
 }
 // Go to the specified page
 function goToPage(page) {
@@ -457,40 +462,60 @@ function goToPage(page) {
   renderPage();  // Re-render the gallery with the new page
 }
 
+function openModal(index) {
+  currentIndex = index;
 
-  function openModal(index) {
-    const product = filteredProducts[index];
+  const product = filteredProducts[currentIndex];
 
-    document.getElementById('modal-img').src = product.image;
-    document.getElementById('modal-description').textContent = product.description;
+  document.getElementById('modal-img').src = product.image;
+  document.getElementById('modal-description').textContent = product.description;
 
-    const modalBuyButton = document.getElementById('modal-buy');
-    modalBuyButton.setAttribute('data-item-id', product.id);
-    modalBuyButton.setAttribute('data-item-price', product.price);
-    modalBuyButton.setAttribute('data-item-url', product.url);
-    modalBuyButton.setAttribute('data-item-description', product.description);
-    modalBuyButton.setAttribute('data-item-name', product.name);
+  const modalBuyButton = document.getElementById('modal-buy');
+  modalBuyButton.setAttribute('data-item-id', product.id);
+  modalBuyButton.setAttribute('data-item-price', product.price);
+  modalBuyButton.setAttribute('data-item-url', product.url);
+  modalBuyButton.setAttribute('data-item-description', product.description);
+  modalBuyButton.setAttribute('data-item-name', product.name);
 
-    document.getElementById('modal').style.display = 'flex'; // Show the modal
-  }
+  document.getElementById('modal').style.display = 'flex';
+  updateModalContent() 
+}
 
   function closeModal() {
     document.getElementById('modal').style.display = 'none'; // Hide the modal
   }
+  
+function updateModalContent() {
+  const product = filteredProducts[currentIndex];
 
-  function prevSlide() {
-    currentIndex = (currentIndex - 1 + filteredProducts.length) % filteredProducts.length;
-    const product = filteredProducts[currentIndex];
-    document.getElementById('modal-img').src = product.image;
-    document.getElementById('modal-description').textContent = product.description;
-  }
+  // Update image and description
+  document.getElementById('modal-img').src = product.image;
+  document.getElementById('modal-description').textContent = product.description || 'No description';
 
-  function nextSlide() {
-    currentIndex = (currentIndex + 1) % filteredProducts.length;
-    const product = filteredProducts[currentIndex];
-    document.getElementById('modal-img').src = product.image;
-    document.getElementById('modal-description').textContent = product.description;
-  }
+  // Update index display
+  document.getElementById('modal-index').textContent =
+    `Artwork ${currentIndex + 1} of ${filteredProducts.length}`;
+
+  // Update buy button
+  const buyBtn = document.getElementById('modal-buy');
+  buyBtn.setAttribute('data-item-id', product.id);
+  buyBtn.setAttribute('data-item-name', product.name);
+  buyBtn.setAttribute('data-item-price', product.price);
+  buyBtn.setAttribute('data-item-url', product.url);
+  buyBtn.setAttribute('data-item-description', product.description);
+}
+
+function prevSlide() {
+  if (filteredProducts.length === 0) return;
+  currentIndex = (currentIndex - 1 + filteredProducts.length) % filteredProducts.length;
+  updateModalContent();
+}
+
+function nextSlide() {
+  if (filteredProducts.length === 0) return;
+  currentIndex = (currentIndex + 1) % filteredProducts.length;
+  updateModalContent();
+}
 
   document.getElementById('modal-buy').addEventListener('click', function(e) {
     const productId = e.target.getAttribute('data-item-id');
